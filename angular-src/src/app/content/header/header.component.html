@@ -10,10 +10,10 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <!--<a class="nav-item nav-link active" href="#">Drawings<span class="sr-only">(current)</span></a>-->
-        <a class="nav-item nav-link" href="#">Drawings</a>
-        <a class="nav-item nav-link" href="#">Sculptures</a>
-        <a class="nav-item nav-link" href="#">Calligraphy</a>
-        <a class="nav-item nav-link" href="#">About</a>
+        <a class="nav-item nav-link" [routerLink]="['drawings']" [routerLinkActive]="['active']">Drawings</a>
+        <a class="nav-item nav-link" [routerLink]="['sculptures']" [routerLinkActive]="['active']">Sculptures</a>
+        <a class="nav-item nav-link" [routerLink]="['calligraphy']" [routerLinkActive]="['active']">Calligraphy</a>
+        <a class="nav-item nav-link" [routerLink]="['about']" [routerLinkActive]="['active']">About</a>
       </div>
     </div>
   </nav>
