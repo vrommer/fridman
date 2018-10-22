@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 
 // User defined modules
 import { ContentModule } from './content/content.module';
@@ -13,6 +14,8 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    HttpClientJsonpModule,
 
     // User declared modules
     ContentModule

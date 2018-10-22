@@ -1,3 +1,8 @@
 **/node_modules/*
 **/.idea
 **/yarn.lock
+
+# Temporary files
+**/*.jpg
+**/*.png
+**/*.jpeg

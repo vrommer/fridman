@@ -6,7 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { BodyComponent } from './body/body.component';
 
-import { ContentRoutingModule } from './content-routing.module'
+import { ContentRoutingModule } from './content-routing.module';
 
 @NgModule({
   imports: [

@@ -39,4 +39,6 @@ testem.log
 Thumbs.db
 
 # Temporary files
-**/images/*.jpg
+**/*.jpg
+**/*.png
+**/*.jpeg
