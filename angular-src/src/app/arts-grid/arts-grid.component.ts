@@ -1,14 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
-  selector: 'mf-body',
-  templateUrl: './body.component.html',
-  styleUrls: ['./body.component.scss']
+  selector: 'mf-arts-grid',
+  templateUrl: './arts-grid.component.html',
+  styleUrls: ['./arts-grid.component.scss']
 })
-
-export class BodyComponent implements OnInit {
+export class ArtsGridComponent implements OnInit {
 
   private sources: string[];
   private sourcesGrid: string[][];
@@ -56,6 +55,5 @@ export class BodyComponent implements OnInit {
       );
     });
   }
-
 
 }
