@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 
+// Globals
+
 @Component({
   selector: 'mf-arts-grid',
   templateUrl: './arts-grid.component.html',
-  styleUrls: ['./arts-grid.component.scss']
+  styleUrls: ['./arts-grid.component.scss'],
+  animations: [
+  ]
 })
 export class ArtsGridComponent implements OnInit {
 

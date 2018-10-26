@@ -1,0 +1,8 @@
+<div class="mf-close-up-wall"></div>
+<div class="mf-close-up-img">
+  <mf-carousel [delay]="2000">
+    <mf-carousel-item *ngFor="let src of sources">
+      <img src="../../../{{src}}" alt="Card image cap" class="img-fluid" mfFitImage>
+    </mf-carousel-item>
+  </mf-carousel>
+</div>
