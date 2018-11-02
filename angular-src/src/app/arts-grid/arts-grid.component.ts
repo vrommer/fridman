@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {AppControlService} from "../core/services/app-control.service";
+import {ArtWork} from "../model/art-work";
+import {ArtsService} from "../core/services/arts.service";
 
 // Globals
 
@@ -13,50 +16,51 @@ import {HttpClient} from "@angular/common/http";
 })
 export class ArtsGridComponent implements OnInit {
 
-  private sources: string[];
-  private sourcesGrid: string[][];
-  private apiUrl: string;
+  private _sources: ArtWork[];
+  private _sourcesGrid: ArtWork[][];
+  private _apiUrl: string;
+  private _type: string;
 
-  constructor(private route: ActivatedRoute, private httpClient:HttpClient) {
+  get type() {
+    return this._type;
   }
 
-  getArtifactsPaths(type:string) {
-    return this.httpClient.jsonp(`${this.apiUrl}?param=${type}`, 'callback');
+  get sourcesGrid() {
+    return this._sourcesGrid;
   }
 
-  /**
-   * Convert from source string[] to a 4*X matrix of strings.
-   * Each row in the matrix represents a row of image sources.
-   * @param aInput
-   * @returns {string[][]}
-   */
-  public createSourcesGrid(aInput:string[]):string[][]{
-    let iColumnsCount = 4;
-    let iCurrentColumn = 0;
-    let aColumns = [
-      [],
-      [],
-      [],
-      []
-    ];
-    // Go over array
-    for (let i = 0; i < aInput.length; i++) {
-      // Get the correct column number
-      iCurrentColumn = i % iColumnsCount;
-      // Push image into column
-      aColumns[iCurrentColumn].push(aInput[i]);
-    }
-    return aColumns;
+  constructor(private route: ActivatedRoute,
+              private httpClient:HttpClient,
+              private control:AppControlService,
+              private artService:ArtsService
+  ) { }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    this.hideDetails();
+  }
+
+  showDetails(item:ArtWork) {
+    this.control.requestDetails(item);
+  }
+
+  hideDetails() {
+    this.control.requestDetails(null);
+  }
+
+  getArtifacts(type:string) {
+    let inputParam = type ? type : "drawings";
+    return this.httpClient.jsonp(`${this._apiUrl}/${inputParam}`, 'callback');
   }
 
   ngOnInit() {
-    this.apiUrl = 'http://localhost:3000/api';
+    this._apiUrl = 'http://localhost:3000/api';
     this.route.params.subscribe( p => {
-      this.getArtifactsPaths(p.param).subscribe(r => {
-          this.sources = r as string[];
-          this.sourcesGrid = this.createSourcesGrid(r as string[]);
-        }
-      );
+      this._type = p.param;
+      this.getArtifacts(p.param).subscribe(r => {
+        this._sources = this.artService.convertToArtItems(r);
+        this._sourcesGrid = this.artService.createSourcesGrid(this._sources);
+      });
     });
   }
 

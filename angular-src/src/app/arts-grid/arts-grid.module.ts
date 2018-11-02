@@ -6,6 +6,7 @@ import { ArtsGridComponent } from './arts-grid.component';
   imports: [
     CommonModule
   ],
-  declarations: [ArtsGridComponent]
+  declarations: [ArtsGridComponent],
+  exports: [ArtsGridComponent]
 })
 export class ArtsGridModule { }

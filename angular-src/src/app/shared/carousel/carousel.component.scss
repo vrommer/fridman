@@ -1,0 +1,32 @@
+$nav-button-size: 60px;
+
+.app-carousel-navigation {
+  position: absolute;
+  opacity: 0.15;
+  transition: opacity .2s ease-in-out;
+  height: $nav-button-size;
+  width: $nav-button-size;
+  border-radius: 50%;
+  background: white;
+  bottom: 10%;
+  transform: translate(0, 50%);
+  box-shadow: 0 0 0 6px orange;
+  &.app-carousel-back-button {
+    left: 20%;
+  }
+  &.app-carousel-forward-button {
+    right: 20%;
+  }
+  &:hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  fa-icon {
+    margin: 0;
+    position: absolute;
+    font-size: $nav-button-size/1.5;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CloseUpComponent } from './close-up.component';
 
@@ -14,4 +14,6 @@ import { FitImageDirective } from './fit-image.directive';
   declarations: [CloseUpComponent, FitImageDirective],
   exports: [CloseUpComponent]
 })
-export class CloseUpModule { }
+export class CloseUpModule {
+
+}

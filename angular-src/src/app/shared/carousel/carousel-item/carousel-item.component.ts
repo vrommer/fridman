@@ -7,18 +7,22 @@ import {Component, OnInit} from '@angular/core';
 })
 export class CarouselItemComponent implements OnInit {
 
-  hidden: Boolean;
+  _hidden: boolean;
 
-  hide() {
-    this.hidden = true;
+  get hidden():boolean {
+    return this._hidden;
+  }
+
+  public hide() {
+    this._hidden = true;
   }
 
   public show() {
-    this.hidden = false;
+    this._hidden = false;
   }
 
   toggle() {
-    this.hidden = !this.hidden;
+    this._hidden = !this.hidden;
   }
 
   constructor() {
