@@ -1,3 +1,4 @@
-<div [hidden]="hidden">
+<!--<div [@s_hidden="isHidden ? 'hidden' : 'shown'" [hidden]="hidden">-->
+<div @showHide *ngIf="!isHidden">
   <ng-content></ng-content>
 </div>

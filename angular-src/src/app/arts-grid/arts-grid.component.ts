@@ -33,14 +33,17 @@ export class ArtsGridComponent implements OnInit {
               private httpClient:HttpClient,
               private control:AppControlService,
               private artService:ArtsService
-  ) { }
+  ) {
+  }
 
   @HostListener('document:keydown.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
+    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: auto");
     this.hideDetails();
   }
 
   showDetails(item:ArtWork) {
+    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: hidden");
     this.control.requestDetails(item);
   }
 

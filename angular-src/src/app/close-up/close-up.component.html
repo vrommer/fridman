@@ -1,8 +1,13 @@
 <div class="mf-close-up-wall"></div>
 <div class="mf-close-up-img">
-  <mf-carousel [viewMode]="carouselMode">
-    <mf-carousel-item *ngFor="let item of sources">
-      <img [src]="item.path" alt="Card image cap" class="img-fluid" mfFitImage>
-    </mf-carousel-item>
+  <mf-carousel class="mf-carousel" [viewMode]="carouselMode">
+    <div class="mf-carousel-item" *ngFor="let item of sources">
+      <mf-carousel-item>
+        <div class="carousel-content-wrapper">
+          <img [src]="item.path" alt="Card image cap" class="img-fluid" mfFitImage>
+        </div>
+      </mf-carousel-item>
+    </div>
   </mf-carousel>
 </div>
+

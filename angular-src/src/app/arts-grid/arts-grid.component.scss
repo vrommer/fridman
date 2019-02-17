@@ -1,11 +1,13 @@
-.mfArtWorkThumbnailContainer {
-  box-shadow: 0 0 0 3px white;
-  overflow: hidden;
-  border-radius: 3px;
-  transition: transform .2s;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
+#arts-grid {
+  .mfArtWorkThumbnailContainer {
+    box-shadow: 0 0 0 3px white;
+    overflow: hidden;
+    border-radius: 3px;
+    transition: transform .2s;
+    &:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
   }
 }
 

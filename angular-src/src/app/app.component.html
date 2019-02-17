@@ -1,5 +1,7 @@
 <div class="mf-canvas">
   <mf-header></mf-header>
   <router-outlet></router-outlet>
-  <mf-close-up *ngIf="showDetails" [requestedItem]="requestedItem"></mf-close-up>
+  <div @showHideDetails *ngIf="showDetails" class="close-up-wrapper">
+    <mf-close-up [requestedItem]="requestedItem"></mf-close-up>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 <div class="container mf-arts-grid">
-  <div class="row">
+  <div id="arts-grid" class="row">
     <div *ngFor="let col of sourcesGrid" class="col-3">
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">
         <img [src]="source.path" class="img-fluid mfArtWorkThumbnail" alt="Card image cap" (click)="showDetails(source)">

@@ -6,6 +6,7 @@ import {CarouselItemComponent} from "./carousel-item/carousel-item.component";
 import {CarouselMode} from "./carousel-utils/carousel-mode";
 import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
 import {faAngleRight} from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'mf-carousel',
@@ -18,8 +19,13 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   @Input() delay: number;
   @ContentChildren(CarouselItemComponent) items: QueryList<CarouselItemComponent>;
 
-  private pointer: number;
-  private showing: boolean;
+  private _pointer: number;
+  private _showing: boolean;
+
+  get showing() {
+    return this._showing;
+  }
+
   itemsArray: CarouselItemComponent[];
 
   leftIcon = faAngleLeft;
@@ -28,12 +34,12 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   mutationObserver: MutationObserver;
 
   constructor(private el: ElementRef) {
-    this.pointer = -1;
+    this._pointer = -1;
     let config = { attributes: true, childList: true, subtree: true };
     // Track changes of elements length
     this.mutationObserver = new MutationObserver(() => {
       this.itemsArray = this.items.toArray();
-      if (!this.showing){
+      if (!this._showing){
         this.nextItem();
       }
     });
@@ -62,26 +68,31 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
   public nextItem = () => {
     if (this.itemsArray && this.itemsArray.length) {
-      this.showing = true;
-      if (this.pointer >= 0){
-        this.itemsArray[this.pointer].hide();
+      this._showing = true;
+      // If no item has been displayed yet
+      if (this._pointer < 0) {
+        this._pointer = 0;
+        this.itemsArray[this._pointer].showNew();
       }
-      this.pointer = ( this.pointer + 1 ) % this.items.length;
-      this.itemsArray[this.pointer].show();
+      else {
+        this.itemsArray[this._pointer].hide();
+        this._pointer = ( this._pointer + 1 ) % this.items.length;
+        this.itemsArray[this._pointer].show();
+      }
     } else {
-      this.showing = false;
-      this.pointer = -1;
+      this._showing = false;
+      this._pointer = -1;
     }
   };
 
   public previousItem = () => {
-    if (this.showing) {
-      this.itemsArray[this.pointer].hide();
-      this.pointer--;
-      if (this.pointer < 0){
-        this.pointer = this.items.length + this.pointer;
+    if (this._showing) {
+      this.itemsArray[this._pointer].hide();
+      this._pointer--;
+      if (this._pointer < 0){
+        this._pointer = this.items.length + this._pointer;
       }
-      this.itemsArray[this.pointer].show();
+      this.itemsArray[this._pointer].show();
     }
   };
 }
