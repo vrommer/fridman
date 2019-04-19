@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
-  selector: 'mf-carousel-item',
-  templateUrl: './carousel-item.component.html',
-  styleUrls: ['./carousel-item.component.scss'],
+  selector: 'mf-arts-item',
+  templateUrl: './arts-item.component.html',
+  styleUrls: ['./arts-item.component.scss'],
   animations: [
     trigger('showHide', [
       transition(':enter', [
@@ -17,7 +17,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
     ])
   ]
 })
-export class CarouselItemComponent implements OnInit {
+export class ArtsItemComponent implements OnInit {
 
   _hidden: boolean;
 
@@ -47,5 +47,4 @@ export class CarouselItemComponent implements OnInit {
   ngOnInit() {
     this.hide();
   }
-
 }

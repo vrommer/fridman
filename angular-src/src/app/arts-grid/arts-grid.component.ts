@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {AppControlService} from "../core/services/app-control.service";
@@ -14,7 +14,17 @@ import {ArtsService} from "../core/services/arts.service";
   animations: [
   ]
 })
-export class ArtsGridComponent implements OnInit {
+export class ArtsGridComponent implements OnInit, OnDestroy {
+
+  constructor(private route: ActivatedRoute,
+              private httpClient:HttpClient,
+              private control:AppControlService,
+              private artService:ArtsService
+  ) {
+  }
+
+  ngOnDestroy(): void {
+  }
 
   private _sources: ArtWork[];
   private _sourcesGrid: ArtWork[][];
@@ -29,12 +39,16 @@ export class ArtsGridComponent implements OnInit {
     return this._sourcesGrid;
   }
 
-  constructor(private route: ActivatedRoute,
-              private httpClient:HttpClient,
-              private control:AppControlService,
-              private artService:ArtsService
-  ) {
+  // ---------------------- PRIVATE METHODS -----------------------
+
+  findItem(id) {
+    for (let s of this._sources) {
+      if (s.id === id) return s;
+    }
+    return null;
   }
+
+  // --------------------------------------------------------------
 
   @HostListener('document:keydown.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -42,7 +56,14 @@ export class ArtsGridComponent implements OnInit {
     this.hideDetails();
   }
 
-  showDetails(item:ArtWork) {
+  showDetails(event) {
+    event.stopPropagation();
+    // get the id to get
+    let id = event.target.getAttribute("id");
+    // find the item
+    let item = this.findItem(id);
+    // run requestDetails
+    if (!item) return;
     document.getElementsByTagName("body")[0].setAttribute("style", "overflow: hidden");
     this.control.requestDetails(item);
   }

@@ -12,6 +12,7 @@ import { ArtsGridModule } from './arts-grid/arts-grid.module';
 import { CloseUpModule } from './close-up/close-up.module';
 import { HeaderModule } from './header/header.module';
 import { SharedModule } from './shared/shared.module';
+import {ArtsItemModule} from "./arts-item/arts-item.module";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { SharedModule } from './shared/shared.module';
     AppRoutingModule,
 
     ArtsGridModule,
+    ArtsItemModule,
 
     CloseUpModule,
 
