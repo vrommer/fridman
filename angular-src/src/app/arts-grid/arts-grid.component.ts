@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {AppControlService} from "../core/services/app-control.service";
 import {ArtWork} from "../model/art-work";
 import {ArtsService} from "../core/services/arts.service";
-import {style} from "@angular/animations";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 // Globals
 
@@ -12,6 +12,17 @@ import {style} from "@angular/animations";
   selector: 'mf-arts-grid',
   templateUrl: './arts-grid.component.html',
   styleUrls: ['./arts-grid.component.scss'],
+  animations: [
+    trigger('showHide', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('0.2s', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('0.2s', style({ opacity:0 }))
+      ])
+    ])
+  ]
 })
 export class ArtsGridComponent implements OnInit, OnDestroy {
 
@@ -79,12 +90,16 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.control.artsShowing$.subscribe((val) => {
+      for (let source of this._sources) source.showItem = val;
+    });
     this._apiUrl = 'http://localhost:3000/api';
     this.route.params.subscribe( p => {
       this._type = p.param;
       this.getArtifacts(p.param).subscribe(r => {
         this._sources = this.artService.convertToArtItems(r);
         this._sourcesGrid = this.artService.createSourcesGrid(this._sources);
+        // for (let source of this._sources) source.showItem();
       });
     });
   }

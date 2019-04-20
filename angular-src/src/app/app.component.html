@@ -2,9 +2,7 @@
   <div @showHideHeader *ngIf="showHeader">
     <mf-header (changeCategory)="onCategoryChange($event)"></mf-header>
   </div>
-  <div [@showHideGrid]="showGrid ? 'shown' : 'hidden'">
-    <router-outlet></router-outlet>
-  </div>
+  <router-outlet></router-outlet>
   <div @showHideDetails *ngIf="showDetails" class="close-up-wrapper">
     <mf-close-up [requestedItem]="requestedItem"></mf-close-up>
   </div>

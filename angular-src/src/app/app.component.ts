@@ -28,17 +28,6 @@ import {Router} from "@angular/router";
       transition(':leave', [
         animate('0.3s', style({ opacity:0 }))
       ])
-    ]),
-    trigger('showHideGrid', [
-      state('shown', style({
-        opacity: 1,
-      })),
-      state('hidden', style({
-        opacity: 0,
-      })),
-      transition('shown <=> hidden', [
-        animate('0.3s')
-      ]),
     ])
   ]
 })
@@ -49,7 +38,10 @@ export class AppComponent implements OnInit{
       this.countTwoIntervals()
     ).subscribe(val => {
       if (val === 1) this.showHeader = true;
-      else this.showGrid = true;
+      else {
+        this.showGrid = true;
+        this.control.showArts(true);
+      }
     });
     this.control.detailsRequested$.subscribe(artWork => {
       this.requestedItem = artWork;
@@ -59,7 +51,7 @@ export class AppComponent implements OnInit{
 
   private _showDetails:boolean = false;
   private _showHeader:boolean = false;
-  private _showGrid:boolean = false;
+  private _showGrid:boolean = true;
   public requestedItem:ArtWork;
 
   constructor(private control:AppControlService,
@@ -106,13 +98,13 @@ export class AppComponent implements OnInit{
   });
 
   onCategoryChange(newCategory:String) {
-    this.showGrid = false;
+    this.control.showArts(false);
 
     timer(300).subscribe(() => {
       this.router.navigate([`/${newCategory}`]);
     });
     timer(650).subscribe(() => {
-      this.showGrid = true;
+      this.control.showArts(true);
     });
   }
 }
