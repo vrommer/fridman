@@ -3,9 +3,11 @@
   <mf-carousel class="mf-carousel" [viewMode]="carouselMode">
     <div class="mf-carousel-item" *ngFor="let item of sources">
       <mf-carousel-item>
-        <div class="carousel-content-wrapper">
-          <img [src]="item.path" alt="Card image cap" class="img-fluid" mfFitImage>
-        </div>
+        <mf-arts-item>
+          <div class="carousel-content-wrapper">
+            <img [src]="item.path" alt="Card image cap" class="img-fluid" mfFitImage>
+          </div>
+        </mf-arts-item>
       </mf-carousel-item>
     </div>
   </mf-carousel>

@@ -6,6 +6,7 @@ import { ArtsItemComponent } from './arts-item.component';
   imports: [
     CommonModule
   ],
-  declarations: [ArtsItemComponent]
+  declarations: [ArtsItemComponent],
+  exports: [ArtsItemComponent]
 })
 export class ArtsItemModule { }

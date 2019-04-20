@@ -26,15 +26,9 @@ import {ArtsItemModule} from "./arts-item/arts-item.module";
 
     // User declared modules
     AppRoutingModule,
-
     ArtsGridModule,
-    ArtsItemModule,
-
     CloseUpModule,
-
     HeaderModule,
-
-    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

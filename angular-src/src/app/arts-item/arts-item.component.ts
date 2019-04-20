@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {timer} from "rxjs/index";
+import {take} from "rxjs/internal/operators";
 
 @Component({
   selector: 'mf-arts-item',
@@ -45,6 +47,7 @@ export class ArtsItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.hide();
+    // this.hide();
+    // timer(400).pipe(take(1)).subscribe(() => this.show());
   }
 }

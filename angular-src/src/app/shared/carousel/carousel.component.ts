@@ -39,7 +39,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
     // Track changes of elements length
     this.mutationObserver = new MutationObserver(() => {
       this.itemsArray = this.items.toArray();
-      if (!this._showing){
+      if (!this.showing){
         this.nextItem();
       }
     });

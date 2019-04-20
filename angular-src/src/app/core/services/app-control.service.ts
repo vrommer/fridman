@@ -8,12 +8,18 @@ import {ArtWork} from "../../model/art-work";
 export class AppControlService {
   // Observable string sources
   private detailsRequestedSource = new Subject<ArtWork>();
+  private artsCategoryChanged = new Subject<String>();
 
   // Observable string streams
   detailsRequested$ = this.detailsRequestedSource.asObservable();
+  categoryChanged$ = this.artsCategoryChanged.asObservable();
 
   // Service message commands
   requestDetails(item: ArtWork) {
     this.detailsRequestedSource.next(item);
+  }
+
+  changeArtsCategory(category: String) {
+    this.categoryChanged$.next(category);
   }
 }
