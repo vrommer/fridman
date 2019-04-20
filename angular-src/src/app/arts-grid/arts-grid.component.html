@@ -1,4 +1,4 @@
-<div class="container mf-arts-grid" [@showHideGrid]="showGrid ? 'shown' : 'hidden'">
+<div class="container mf-arts-grid">
   <div id="arts-grid" class="row" (click)="showDetails($event)">
     <div *ngFor="let col of sourcesGrid" class="col-3">
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">

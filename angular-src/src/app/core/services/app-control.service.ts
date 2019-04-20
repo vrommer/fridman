@@ -20,6 +20,6 @@ export class AppControlService {
   }
 
   changeArtsCategory(category: String) {
-    this.categoryChanged$.next(category);
+    this.artsCategoryChanged.next(category);
   }
 }

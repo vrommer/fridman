@@ -4,8 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {AppControlService} from "../core/services/app-control.service";
 import {ArtWork} from "../model/art-work";
 import {ArtsService} from "../core/services/arts.service";
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {timer} from "rxjs/index";
+import {style} from "@angular/animations";
 
 // Globals
 
@@ -13,19 +12,6 @@ import {timer} from "rxjs/index";
   selector: 'mf-arts-grid',
   templateUrl: './arts-grid.component.html',
   styleUrls: ['./arts-grid.component.scss'],
-  animations: [
-    trigger('showHideGrid', [
-      state('shown', style({
-        opacity: 1,
-      })),
-      state('hidden', style({
-        opacity: 0,
-      })),
-      transition('shown <=> hidden', [
-        animate('0.5s')
-      ]),
-    ])
-  ]
 })
 export class ArtsGridComponent implements OnInit, OnDestroy {
 
@@ -34,6 +20,9 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
               private control:AppControlService,
               private artService:ArtsService
   ) {
+    this.control.categoryChanged$.subscribe(() => {
+      this.showGrid = false;
+    });
   }
 
   ngOnDestroy(): void {
@@ -43,17 +32,8 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   private _sourcesGrid: ArtWork[][];
   private _apiUrl: string;
   private _type: string;
-  private _showGrid:boolean = false;
 
   // ---------------------- GETTER/SETTER -----------------------
-
-  get showGrid() {
-    return this._showGrid;
-  }
-
-  set showGrid(val) {
-    this._showGrid = val;
-  }
 
   get type() {
     return this._type;
@@ -108,7 +88,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
       this.getArtifacts(p.param).subscribe(r => {
         this._sources = this.artService.convertToArtItems(r);
         this._sourcesGrid = this.artService.createSourcesGrid(this._sources);
-        timer(1000).subscribe(() => this.showGrid = true)
       });
     });
   }

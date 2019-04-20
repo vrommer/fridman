@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from "@angular/router";
 
 @Component({
@@ -12,6 +12,8 @@ export class HeaderComponent implements OnInit {
   private _calligraphy: String = 'calligraphy';
   private _sculptures: String = 'sculptures';
   private _currentRoute: String;
+
+  @Output() changeCategory: EventEmitter<String> = new EventEmitter();
 
   constructor(private router: Router) {
     this.currentRoute = this.router.url.split('/')[1];
@@ -42,7 +44,7 @@ export class HeaderComponent implements OnInit {
 
   changeRoute (param, event) {
     event.preventDefault();
+    this.changeCategory.emit(param);
     this.currentRoute = param;
-    this.router.navigate([`/${param}`]);
   }
 }
