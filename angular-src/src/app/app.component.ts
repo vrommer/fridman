@@ -2,10 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppControlService} from "./core/services/app-control.service";
 import {ArtWork} from "./model/art-work";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {interval, timer} from "rxjs/index";
-import {bufferCount, count, map, take} from "rxjs/internal/operators";
-import {counter} from "@fortawesome/fontawesome-svg-core";
-import {HeaderComponent} from "./header/header.component";
+import {interval, Observable, timer} from "rxjs/index";
+import {take} from "rxjs/internal/operators";
 import {Router} from "@angular/router";
 
 @Component({
@@ -16,10 +14,10 @@ import {Router} from "@angular/router";
     trigger('showHideDetails', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('0.3s', style({ opacity: 1 })),
+        animate('0.1s', style({ opacity: 1 })),
       ]),
       transition(':leave', [
-        animate('0.3s', style({ opacity:0 }))
+        animate('0.2s', style({ opacity:0 }))
       ])
     ]),
     trigger('showHideHeader', [
@@ -39,16 +37,19 @@ import {Router} from "@angular/router";
         opacity: 0,
       })),
       transition('shown <=> hidden', [
-        animate('0.2s')
+        animate('0.3s')
       ]),
     ])
   ]
 })
 export class AppComponent implements OnInit{
+
   ngOnInit(): void {
-    timer(1000).subscribe(() => this.showGrid = true)
-    timer(1000).subscribe(() =>  {
-      this.showHeader = true
+    interval(650).pipe(
+      this.countTwoIntervals()
+    ).subscribe(val => {
+      if (val === 1) this.showHeader = true;
+      else this.showGrid = true;
     });
     this.control.detailsRequested$.subscribe(artWork => {
       this.requestedItem = artWork;
@@ -89,11 +90,28 @@ export class AppComponent implements OnInit{
     this._showHeader = val;
   }
 
+  countTwoIntervals = () => (source: Observable<any>) =>
+    new Observable(observer => {
+      let count = 0;
+      return source.pipe(take(2)).subscribe({
+        next() {
+          count++;
+          observer.next(
+            count++
+          );
+        },
+        error(err) { observer.error(err); },
+        complete() { observer.complete(); }
+    });
+  });
+
   onCategoryChange(newCategory:String) {
     this.showGrid = false;
-    this.control.changeArtsCategory(newCategory);
-    timer(1000).subscribe(() => {
+
+    timer(300).subscribe(() => {
       this.router.navigate([`/${newCategory}`]);
+    });
+    timer(650).subscribe(() => {
       this.showGrid = true;
     });
   }

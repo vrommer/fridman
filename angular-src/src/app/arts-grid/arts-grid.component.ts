@@ -20,9 +20,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
               private control:AppControlService,
               private artService:ArtsService
   ) {
-    this.control.categoryChanged$.subscribe(() => {
-      this.showGrid = false;
-    });
   }
 
   ngOnDestroy(): void {
