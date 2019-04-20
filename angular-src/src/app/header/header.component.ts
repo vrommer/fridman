@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'mf-header',
@@ -7,13 +8,41 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() {
+  private _drawings: String= 'drawings';
+  private _calligraphy: String = 'calligraphy';
+  private _sculptures: String = 'sculptures';
+  private _currentRoute: String;
+
+  constructor(private router: Router) {
+    this.currentRoute = this.router.url.split('/')[1];
+  }
+
+  get drawings() {
+    return this._drawings;
+  }
+
+  get calligraphy() {
+    return this._calligraphy;
+  }
+
+  get sculptures() {
+    return this._sculptures;
+  }
+
+  get currentRoute () {
+    return this._currentRoute;
+  }
+
+  set currentRoute(val) {
+    this._currentRoute = val;
   }
 
   ngOnInit() {
   }
 
-  changeRoute (param) {
+  changeRoute (param, event) {
+    event.preventDefault();
+    this.currentRoute = param;
     this.router.navigate([`/${param}`]);
   }
 }
