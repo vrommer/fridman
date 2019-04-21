@@ -47,6 +47,7 @@ export class AppComponent implements OnInit{
       }
     });
     this.control.detailsRequested$.subscribe(artWork => {
+      if (artWork) this.header.fixedHeader = false;
       this.requestedItem = artWork;
       this.showDetails = !!artWork;
     });

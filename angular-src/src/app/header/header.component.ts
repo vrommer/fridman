@@ -28,12 +28,7 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
-    if (window.pageYOffset > 300) {
-      if (!this.fixedHeader) this.fixedHeader = true;
-    }
-    else if (window.pageYOffset < 200){
-      if (this.fixedHeader) this.fixedHeader = false;
-    }
+    this.showFixedHeader();
   }
 
   get fixedHeader() {
@@ -42,6 +37,15 @@ export class HeaderComponent implements OnInit {
 
   set fixedHeader(val:boolean) {
     this._fixedHeader = val;
+  }
+
+  showFixedHeader() {
+    if (window.pageYOffset > 300) {
+      if (!this.fixedHeader) this.fixedHeader = true;
+    }
+    else if (window.pageYOffset < 200){
+      if (this.fixedHeader) this.fixedHeader = false;
+    }
   }
 
   constructor() {

@@ -62,12 +62,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------
 
-  @HostListener('document:keydown.escape', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: auto");
-    this.hideDetails();
-  }
-
   showDetails(event) {
     event.stopPropagation();
     // get the id to get
@@ -78,10 +72,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     if (!item) return;
     document.getElementsByTagName("body")[0].setAttribute("style", "overflow: hidden");
     this.control.requestDetails(item);
-  }
-
-  hideDetails() {
-    this.control.requestDetails(null);
   }
 
   getArtifacts(type:string) {
