@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ArtWork} from "../model/art-work";
+import {ArtWork} from "../core/model/art-work";
 import {ArtsService} from "../core/services/arts.service";
 import {CarouselMode} from "../shared/carousel/carousel-utils/carousel-mode";
 

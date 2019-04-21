@@ -1,10 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppControlService} from "./core/services/app-control.service";
-import {ArtWork} from "./model/art-work";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {ArtWork} from "./core/model/art-work";
+import {animate, style, transition, trigger} from "@angular/animations";
 import {interval, Observable, timer} from "rxjs/index";
 import {take} from "rxjs/internal/operators";
 import {Router} from "@angular/router";
+import {HeaderComponent} from "./header/header.component";
 
 @Component({
   selector: 'mf-root',
@@ -33,12 +34,14 @@ import {Router} from "@angular/router";
 })
 export class AppComponent implements OnInit{
 
+  @ViewChild(HeaderComponent) header;
+
   ngOnInit(): void {
     interval(650).pipe(
       this.countTwoIntervals()
     ).subscribe(val => {
       if (val === 1) this.showHeader = true;
-      else {
+      else if (val === 2) {
         this.showGrid = true;
         this.control.showArts(true);
       }
@@ -47,6 +50,7 @@ export class AppComponent implements OnInit{
       this.requestedItem = artWork;
       this.showDetails = !!artWork;
     });
+    this.control.categoryChanged$.subscribe(this.onCategoryChange.bind(this));
   }
 
   private _showDetails:boolean = false;
@@ -55,7 +59,8 @@ export class AppComponent implements OnInit{
   public requestedItem:ArtWork;
 
   constructor(private control:AppControlService,
-    private router: Router) {
+    private router: Router)
+  {
   }
 
   get showGrid() {
@@ -89,7 +94,7 @@ export class AppComponent implements OnInit{
         next() {
           count++;
           observer.next(
-            count++
+            count
           );
         },
         error(err) { observer.error(err); },
@@ -97,7 +102,7 @@ export class AppComponent implements OnInit{
     });
   });
 
-  onCategoryChange(newCategory:String) {
+  onCategoryChange(newCategory:string) {
     this.control.showArts(false);
 
     timer(300).subscribe(() => {

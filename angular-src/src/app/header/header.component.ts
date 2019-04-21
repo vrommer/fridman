@@ -1,50 +1,53 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, HostListener, OnInit} from '@angular/core';
+import {animate, keyframes, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'mf-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  animations: [
+    trigger('showHideFixedHeader', [
+      transition(':enter', [
+        style({ top: -40 }),
+        animate('0.4s', keyframes([
+          style({ top: -20, offset: 0.2 }),
+          style({ top: -10, offset: 0.3 }),
+          style({ top: -5, offset: 0.4 }),
+          style({ top: 0, offset: 1 })
+        ])),
+      ]),
+      transition(':leave', [
+        animate('0.1s', style({ top: -40 }))
+      ])
+    ])
+  ]
 })
 export class HeaderComponent implements OnInit {
 
-  private _drawings: String= 'drawings';
-  private _calligraphy: String = 'calligraphy';
-  private _sculptures: String = 'sculptures';
-  private _currentRoute: String;
+  private _fixedHeader: boolean = false;
 
-  @Output() changeCategory: EventEmitter<String> = new EventEmitter();
-
-  constructor(private router: Router) {
-    this.currentRoute = this.router.url.split('/')[1];
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    if (window.pageYOffset > 300) {
+      if (!this.fixedHeader) this.fixedHeader = true;
+    }
+    else if (window.pageYOffset < 200){
+      if (this.fixedHeader) this.fixedHeader = false;
+    }
   }
 
-  get drawings() {
-    return this._drawings;
+  get fixedHeader() {
+    return this._fixedHeader;
   }
 
-  get calligraphy() {
-    return this._calligraphy;
+  set fixedHeader(val:boolean) {
+    this._fixedHeader = val;
   }
 
-  get sculptures() {
-    return this._sculptures;
-  }
-
-  get currentRoute () {
-    return this._currentRoute;
-  }
-
-  set currentRoute(val) {
-    this._currentRoute = val;
+  constructor() {
   }
 
   ngOnInit() {
   }
 
-  changeRoute (param, event) {
-    event.preventDefault();
-    this.changeCategory.emit(param);
-    this.currentRoute = param;
-  }
 }

@@ -1,6 +1,6 @@
 <div class="mf-canvas">
   <div @showHideHeader *ngIf="showHeader">
-    <mf-header (changeCategory)="onCategoryChange($event)"></mf-header>
+    <mf-header></mf-header>
   </div>
   <router-outlet></router-outlet>
   <div @showHideDetails *ngIf="showDetails" class="close-up-wrapper">

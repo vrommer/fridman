@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from "rxjs/index";
-import {ArtWork} from "../../model/art-work";
+import {ArtWork} from "../model/art-work";
 
 @Injectable({
   providedIn: 'root'

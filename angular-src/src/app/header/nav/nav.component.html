@@ -1,0 +1,12 @@
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" [ngClass]="{'active': currentRoute === drawings}" (click)="changeRoute(drawings, $event)" href="#">Drawings</a>
+    <a class="nav-item nav-link" [ngClass]="{'active': currentRoute === sculptures}" (click)="changeRoute(sculptures, $event)" href="#">Sculptures</a>
+    <a class="nav-item nav-link" [ngClass]="{'active': currentRoute === calligraphy}" (click)="changeRoute(calligraphy, $event)" href="#">Calligraphy</a>
+    <a class="nav-item nav-link" [routerLink]="['about']" [routerLinkActive]="['active']">About</a>
+  </div>
+</div>
