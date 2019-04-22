@@ -16,10 +16,6 @@ export class MainHeaderComponent implements OnInit {
     headerService.routeChanged$.subscribe(param => this.navComponent.currentRoute = param);
   }
 
-  changeRoute(param, event) {
-    this.navComponent.changeRoute(param, event);
-  }
-
   ngOnInit() {
   }
 

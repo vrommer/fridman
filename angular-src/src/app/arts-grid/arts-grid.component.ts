@@ -41,6 +41,8 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._apiUrl = 'http://localhost:3000/api';
     this.route.params.subscribe( p => {
+      this._sources = null;
+      this._sourcesGrid = null;
       this._type = p.param;
       this.getArtifacts(p.param).subscribe(r => {
         this._sources = this.artService.convertToArtItems(r);
@@ -49,9 +51,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
           for (let source of this._sources) source.showItem = true;
         });
       });
-    });
-    timer(650).subscribe(() => {
-      for (let source of this._sources) source.showItem = true;
     });
   }
 

@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {AppControlService} from "../../core/services/app-control.service";
-import {HeaderService} from "../services/header.service";
 import {HeaderModel} from "../header-model";
 
 @Component({
@@ -11,9 +9,7 @@ import {HeaderModel} from "../header-model";
 export class NavComponent implements OnInit {
   private _currentRoute: String;
 
-  constructor(private control:AppControlService,
-              private headerService:HeaderService,
-  ) {
+  constructor() {
   }
 
   get drawings() {
@@ -34,13 +30,6 @@ export class NavComponent implements OnInit {
 
   set currentRoute(val) {
     this._currentRoute = val;
-  }
-
-  changeRoute (param, event) {
-    event.preventDefault();
-    this.headerService.changeRoute(param);
-    this.control.changeArtsCategory(param);
-    this.currentRoute = param;
   }
 
   ngOnInit() {

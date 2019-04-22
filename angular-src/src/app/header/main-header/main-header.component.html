@@ -1,7 +1,7 @@
 <div class="mf-header">
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-      <a class="navbar-brand" (click)="changeRoute(drawings, $event)" href="#">
+      <a class="navbar-brand" [routerLink]="[drawings]">
         The art works of<span class="mf-header-title">Michael Friedman</span>
       </a>
       <mf-nav></mf-nav>
