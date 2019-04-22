@@ -13,7 +13,7 @@ export class MainHeaderComponent implements OnInit {
   @ViewChild(NavComponent) navComponent;
 
   constructor(private headerService:HeaderService) {
-    this.headerService.routeChanged$.subscribe(param => this.navComponent.currentRoute = param);
+    headerService.routeChanged$.subscribe(param => this.navComponent.currentRoute = param);
   }
 
   changeRoute(param, event) {

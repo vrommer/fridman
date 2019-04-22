@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
 import {AppControlService} from "../../core/services/app-control.service";
 import {HeaderService} from "../services/header.service";
 import {HeaderModel} from "../header-model";
@@ -12,11 +11,9 @@ import {HeaderModel} from "../header-model";
 export class NavComponent implements OnInit {
   private _currentRoute: String;
 
-  constructor(private router: Router,
-              private control:AppControlService,
+  constructor(private control:AppControlService,
               private headerService:HeaderService,
   ) {
-    this.currentRoute = this.router.url.split('/')[1];
   }
 
   get drawings() {
