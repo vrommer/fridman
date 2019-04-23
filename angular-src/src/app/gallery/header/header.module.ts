@@ -4,12 +4,14 @@ import { HeaderComponent } from './header.component';
 import { FixedHeaderComponent } from './fixed-header/fixed-header.component';
 import { NavComponent } from './nav/nav.component';
 import { MainHeaderComponent } from './main-header/main-header.component';
-import {GalleryRoutingModule} from "../gallery-routing.module";
+import { GalleryRoutingModule } from "../gallery-routing.module";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   imports: [
     CommonModule,
-    GalleryRoutingModule
+    GalleryRoutingModule,
+    FontAwesomeModule
   ],
   declarations: [
     HeaderComponent,

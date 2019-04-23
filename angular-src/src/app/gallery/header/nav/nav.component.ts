@@ -4,7 +4,7 @@ import {HeaderModel} from "../header-model";
 @Component({
   selector: 'mf-nav',
   templateUrl: './nav.component.html',
-  styles: []
+  styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
   private _currentRoute: String;

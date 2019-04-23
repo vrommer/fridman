@@ -12,6 +12,7 @@ import { ArtsGridModule } from './gallery/arts-grid/arts-grid.module';
 import { CloseUpModule } from './gallery/close-up/close-up.module';
 import { HeaderModule } from './gallery/header/header.module';
 import { GalleryModule } from './gallery/gallery.module';
+import { UsersModule } from './users/users.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { GalleryModule } from './gallery/gallery.module';
     ArtsGridModule,
     CloseUpModule,
     HeaderModule,
+    UsersModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

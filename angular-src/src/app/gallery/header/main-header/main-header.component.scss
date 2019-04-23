@@ -5,4 +5,23 @@
 
 .mf-header {
   background: white;
+
+  .mf-users-menu {
+    display: block;
+    text-align: right;
+
+    .mf-users-menu-button {
+      display: inline-block;
+
+      a {
+        color: #000;
+        padding: 0 8px;
+      }
+    }
+
+    .mf-nav {
+      clear: both;
+    }
+  }
+
 }
