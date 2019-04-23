@@ -13,15 +13,15 @@ export class NavComponent implements OnInit {
   }
 
   get drawings() {
-    return HeaderModel.constants.drawings;
+    return [HeaderModel.constants.gallery, HeaderModel.constants.drawings].join('/');
   }
 
   get calligraphy() {
-    return HeaderModel.constants.calligraphy;
+    return [HeaderModel.constants.gallery, HeaderModel.constants.calligraphy].join('/');
   }
 
   get sculptures() {
-    return HeaderModel.constants.sculptures;
+    return [HeaderModel.constants.gallery, HeaderModel.constants.sculptures].join('/');
   }
 
   get currentRoute () {

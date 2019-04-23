@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ArtsGridComponent } from '../arts-grid/arts-grid.component';
 
 const routes: Routes = [
-  { path: ':param', component: ArtsGridComponent }
+  { path: 'gallery/:param', component: ArtsGridComponent }
 ];
 
 @NgModule({

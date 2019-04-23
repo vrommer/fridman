@@ -11,8 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { ArtsGridModule } from './arts-grid/arts-grid.module';
 import { CloseUpModule } from './close-up/close-up.module';
 import { HeaderModule } from './header/header.module';
-import { SharedModule } from './shared/shared.module';
-import {ArtsItemModule} from "./arts-item/arts-item.module";
 
 @NgModule({
   declarations: [
