@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
-import {AppControlService} from "../core/services/app-control.service";
-import {ArtWork} from "../core/model/art-work";
-import {ArtsService} from "../core/services/arts.service";
+import {AppControlService} from "../../core/services/app-control.service";
+import {ArtWork} from "../../core/model/art-work";
+import {ArtsService} from "../../core/services/arts.service";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {filter} from "rxjs/internal/operators";
 import {timer} from "rxjs/index";

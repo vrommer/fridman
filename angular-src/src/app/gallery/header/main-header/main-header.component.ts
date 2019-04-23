@@ -20,6 +20,6 @@ export class MainHeaderComponent implements OnInit {
   }
 
   get drawings() {
-    return [HeaderModel.constants.gallery, HeaderModel.constants.drawings].join('/');
+    return HeaderModel.constants.drawings;
   }
 }

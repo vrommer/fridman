@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppControlService} from "./core/services/app-control.service";
 import {ArtWork} from "./core/model/art-work";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {HeaderComponent} from "./header/header.component";
+import {HeaderComponent} from "./gallery/header/header.component";
 
 @Component({
   selector: 'mf-root',

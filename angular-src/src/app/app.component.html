@@ -1,9 +1,2 @@
-<div class="mf-canvas">
-  <div @showHideHeader *ngIf="showHeader">
-    <mf-header></mf-header>
-  </div>
-  <router-outlet></router-outlet>
-  <div @showHideDetails *ngIf="showDetails" class="close-up-wrapper">
-    <mf-close-up [requestedItem]="requestedItem"></mf-close-up>
-  </div>
-</div>
+<router-outlet></router-outlet>
+<!--<mf-gallery></mf-gallery>-->

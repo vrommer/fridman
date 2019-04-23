@@ -8,9 +8,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // User defined components
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ArtsGridModule } from './arts-grid/arts-grid.module';
-import { CloseUpModule } from './close-up/close-up.module';
-import { HeaderModule } from './header/header.module';
+import { ArtsGridModule } from './gallery/arts-grid/arts-grid.module';
+import { CloseUpModule } from './gallery/close-up/close-up.module';
+import { HeaderModule } from './gallery/header/header.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HeaderModule } from './header/header.module';
     BrowserAnimationsModule,
 
     // User declared modules
+    GalleryModule,
     AppRoutingModule,
     ArtsGridModule,
     CloseUpModule,

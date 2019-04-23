@@ -1,9 +1,9 @@
 import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ArtWork} from "../core/model/art-work";
-import {ArtsService} from "../core/services/arts.service";
-import {CarouselMode} from "../shared/carousel/carousel-utils/carousel-mode";
-import {AppControlService} from "../core/services/app-control.service";
+import {ArtWork} from "../../core/model/art-work";
+import {ArtsService} from "../../core/services/arts.service";
+import {CarouselMode} from "../../shared/carousel/carousel-utils/carousel-mode";
+import {AppControlService} from "../../core/services/app-control.service";
 
 @Component({
   selector: 'mf-close-up',
