@@ -1,15 +1,43 @@
-var express = require('express');
-var fs = require('fs');
-var path = require('path');
-var sizeOf = require('image-size');
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const sizeOf = require('image-size');
+const assert = require('assert');
+const MongoClient = require('mongodb').MongoClient;
+const globals = require('../globals');
 
-var router = express.Router();
+var credentials = {};
 
-var globals = require('../globals');
+var lineReader = require('readline').createInterface({
+	input: fs.createReadStream('user.properties')
+});
 
-var supportedFolders = ['calligraphy', 'drawings', 'sculptures'];
+lineReader.on('line', function (line) {
+  lineParts = line.split('=');
+  if (lineParts && lineParts.length === 2) credentials[lineParts[0]] = lineParts[1];
+});
 
-var imageModel = function(name, type, dimensions) {
+lineReader.on('close', () => {
+  console.log(credentials);
+  let connStr = `mongodb+srv://${credentials.username}:${credentials.password}@${credentials.dburl}/fridman?retryWrites=true`;
+  connectToDb(connStr);
+});
+
+function connectToDb(connStr) {
+	MongoClient.connect(connStr, { useNewUrlParser: true }, function(err, client) {
+		assert.equal(err, null);
+		const collection = client.db("fridman").collection("devices");
+		console.log("Connection established!");
+		// perform actions on the collection object
+		client.close();
+	});
+}
+
+const router = express.Router();
+
+let supportedFolders = ['calligraphy', 'drawings', 'sculptures'];
+
+let imageModel = function(name, type, dimensions) {
   return {
     'name': name,
     'type': type,
@@ -17,7 +45,7 @@ var imageModel = function(name, type, dimensions) {
   }
 };
 
-var service = {
+let service = {
   readDir: function(dirname) {
     return new Promise((resolve, reject) => {
       fs.readdir(dirname, (err, items) => {
