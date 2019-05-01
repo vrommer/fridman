@@ -1,7 +1,7 @@
 **/node_modules/*
 **/.idea
 **/yarn.lock
-**/user.properties
+**/db.properties
 
 # Temporary files
 **/*.jpg

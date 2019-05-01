@@ -51,10 +51,11 @@ export class ArtsService {
   public convertToArtItems(aInput) {
     let aMappedInput;
     aMappedInput = aInput.map(item => {
-      let itemPath = ['..', '..', 'assets', 'images', item.type, item.name].join('/'),
+      let itemPath = ['..', '..', 'assets', 'images', item.imageType, item.imageName].join('/'),
           image = new Image();
       image.src = itemPath;
-      return new ArtWork(item.name, item.type, itemPath, item.dimensions.height, item.dimensions.width, image);
+      return new ArtWork(item.imageName, item.imageType, itemPath, item.imageDimensions.height,
+        item.imageDimensions.width, image);
     });
     return aMappedInput;
   }
