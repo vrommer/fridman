@@ -51,10 +51,9 @@ export class ArtsService {
   public convertToArtItems(aInput) {
     let aMappedInput;
     aMappedInput = aInput.map(item => {
-      let itemPath = ['..', '..', 'assets', 'images', item.imageType, item.imageName].join('/'),
-          image = new Image();
-      image.src = itemPath;
-      return new ArtWork(item.imageName, item.imageType, itemPath, item.imageDimensions.height,
+      let image = new Image();
+      image.src = item.imageLocation;
+      return new ArtWork(item.imageName, item.imageType, item.imageLocation, item.imageDimensions.height,
         item.imageDimensions.width, image);
     });
     return aMappedInput;

@@ -11,66 +11,66 @@ const globals = require('../globals');
 const lineReader = require('readline');
 const ImageModel = require('../model/ImageModel');
 
-const supportedFolders = ['calligraphy', 'drawings', 'sculptures'];
+const environment = "DEV"; /* "DEV" | "PROD" */
+const imagesPathsMap = new Map([
+	["DEV", ['..', 'angular-src', 'src', 'assets', 'images']],
+	["PROD", ['..', 'public', 'assets', 'images']]
+]);
 
-// let credentials = {};
-//
-// let lineReader = require('readline').createInterface({
-// 	input: fs.createReadStream('db.properties')
-// });
-//
-// lineReader.on('line', function (line) {
-// 	lineParts = line.split('=');
-// 	if (lineParts && lineParts.length === 2) credentials[lineParts[0]] = lineParts[1];
-// });
-//
-// lineReader.on('close', () => {
-// 	let connStr = `mongodb+srv://${credentials.username}:${credentials.password}@${credentials.dburl}/fridman?retryWrites=true`;
-// 	connectToDb(connStr);
-// });
-//
-// function connectToDb(connStr) {
-// 	MongoClient.connect(connStr, {useNewUrlParser: true}, function (err, client) {
-// 		assert.equal(err, null);
-// 		const collection = client.db("fridman").collection("devices");
-// 		console.log("Connection established!");
-// 		// perform actions on the collection object
-// 		client.close();
-// 	});
-// }
-
+const supportedTypes = ['calligraphy', 'drawings', 'sculptures'];
 
 class DataService {
 
 	constructor() {
+		let that = this;
 		this.credentials = {};
 		this.lr = lineReader.createInterface({
 			input: fs.createReadStream('db.properties')
 		});
-		this.connectionString = "";
+		this.dataCache = new Map();
+		this.setUpConnectionString()
+			.then(connStr => {
+				that.connectionString = connStr
+			});
 	}
 
+	/**
+	 *
+	 * @returns {Promise}
+	 */
 	setUpConnectionString() {
+		let that = this,
+			connectionString;
 		return new Promise((resolve, reject) => {
-			try {
-				this.lr.on('line', function (line) {
-					lineParts = line.split('=');
-					if (lineParts && lineParts.length === 2) this.credentials[lineParts[0]] = lineParts[1];
-				});
-				this.lr.on('close', () => {
-					this.connectionString = `mongodb+srv://${credentials.username}:${credentials.password}@${credentials.dburl}/fridman?retryWrites=true`;
-					resolve(this.connectionString);
-					// connectToDb(connStr);
-				});
-			} catch (ex) {
-				reject(ex);
+			if (this.connectionString) {
+				Promise.resolve(this.connectionString)
+					.then(resolve);
+			}
+			else {
+				try {
+					this.lr.on('line', function (line) {
+						let lineParts = line.split('=');
+						if (lineParts && lineParts.length === 2) that.credentials[lineParts[0]] = lineParts[1];
+					});
+					this.lr.on('close', () => {
+						connectionString = `mongodb+srv://${that.credentials.username}:` +
+									`${that.credentials.password}@${that.credentials.dburl}/fridman?retryWrites=true`;
+						resolve(connectionString);
+					});
+				} catch (ex) {
+					reject(ex);
+				}
 			}
 		});
 	}
 
-	connectToDb() {
+	/**
+	 *
+	 * @returns {Promise}
+	 */
+	connectToDb(connectionString) {
 		return new Promise((resolve, reject) => {
-			MongoClient.connect(this.connectionString, {useNewUrlParser: true}, function (err, client) {
+			MongoClient.connect(connectionString, {useNewUrlParser: true}, function (err, client) {
 				try {
 					assert.equal(err, null);
 				} catch (ex) {
@@ -79,59 +79,79 @@ class DataService {
 				resolve(client);
 			});
 		});
-		// MongoClient.connect(this.connectionString, {useNewUrlParser: true}, function (err, client) {
-		// 	assert.equal(err, null);
-		// 	const collection = client.db("fridman").collection("devices");
-		// 	console.log("Connection established!");
-		// 	// perform actions on the collection object
-		// 	client.close();
-		// });
-	}
-
-	readDir(dirname) {
-		return new Promise((resolve, reject) => {
-			fs.readdir(dirname, (err, items) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(items);
-				}
-			});
-		});
 	}
 
 	/**
-	 * Get an array of items of type 'type'.
+	 * Get an array of items of imageType 'imageType'.
 	 * if item !== null then item should be first in the array.
 	 * The original order of the array should be preserved.
-	 * @param type: string
+	 * @param imageType: string
 	 * @param item: string
 	 * @returns {Promise}
 	 */
-	getItems(type, item) {
+	getItems(oData) {
+		console.log("dataService@getImageType, ", oData);
+		oData.dataCache = this.dataCache;
+		return this.setUpConnectionString()
+			.then(this.connectToDb)
+			.then(this.getFromImagesCollection.bind(oData))
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	/**
+	 * This inner method returns a promise of images.
+	 * In order to work correctly the method must be bound to the following:
+	 * {
+	 *   imageType: string,
+	 *   imageName: string,
+	 *   dataCache: map
+	 * }
+	 * dataCache used is this.dataCache.
+	 *
+	 * The method will fetch the data from database if and cache the data.
+	 * If data is already cached the method will use it.
+	 * @param oClient
+	 * @returns {Promise}
+	 */
+	getFromImagesCollection(oClient) {
 		return new Promise((resolve, reject) => {
-			let aPathParts = ['assets', 'images', type];
-			if (!supportedFolders.includes(type)) {
-				reject({error: 'Not found.'});
+			let imageType = this.imageType,
+				imageName = this.imageName,
+				dataCache = this.dataCache,
+				db = oClient.db("fridman"),
+				imagesCollection = db.collection("images");
+			// TODO: Use 'limit' for pagination
+			// imagesCollection.find({imageType: imageType}).limit(2).toArray(function(err, docs) {
+			if (dataCache.get(imageType)) {
+				let docs = dataCache.get(imageType);
+				if (imageName) {
+					let index = docs.map(image => image.imageName).indexOf(imageName);
+					let start = docs.slice(index, docs.length);
+					let end = docs.slice(0, index);
+					docs = [...start, ...end];
+				}
+				resolve(docs);
 			}
 			else {
-				let target = path.join(__dirname, '..', 'angular-src', 'src', ...aPathParts);
-				let aReturnData = [];
-				this.readDir(target)
-					.then((data) => {
-						if (item) {
-							let index = data.indexOf(item);
-							let start = data.slice(index, data.length);
-							let end = data.slice(0, index);
-							data = [...start, ...end];
+				imagesCollection.find({imageType: imageType}).toArray(function(err, docs) {
+					if (err) {
+						oClient.close();
+						reject(err);
+					}
+					else {
+						dataCache.set(imageType, docs);
+						if (imageName) {
+							let index = docs.map(image => image.imageName).indexOf(imageName);
+							let start = docs.slice(index, docs.length);
+							let end = docs.slice(0, index);
+							docs = [...start, ...end];
 						}
-						for (let item of data) {
-							let full_path = path.join(target, item);
-							let dimensions = sizeOf(full_path);
-							aReturnData.push(new ImageModel(item, type, dimensions));
-						}
-						resolve(aReturnData);
-					}).catch(reject);
+						resolve(docs);
+						oClient.close();
+					}
+				});
 			}
 		});
 	}
@@ -139,20 +159,21 @@ class DataService {
 	/**
 	 *
 	 * @param type
-	 * @returns {Promise<[{
+	 * @returns {Promise<{
 	 *     type: string,
 	 *     dirName: string,
 	 *     names: string[]
-	 * }, ...]>}
+	 * }>}
 	 */
-	getImageNames(type) {
-		let target = path.join(__dirname, '..', 'images', type);
+	getImageNames(imageType) {
+		console.log("dataService@getImageNames");
+		let target = path.join(__dirname, ...imagesPathsMap.get(environment), imageType);
 		return new Promise((resolve, reject) => {
 			fs.readdir(target, (err, items) => {
 				if (err) reject(err);
 				else {
 					let results = {
-						"type": type,
+						"type": imageType,
 						"dirName": target,
 						"names": items
 					};
@@ -171,10 +192,10 @@ class DataService {
 	 * }
 	 * @returns {Promise.<{ImageModel[]}>}
 	 */
-	getImages(oInput) {
+	getImageObjects(oInput) {
 		let promises = [];
 		for (let name of oInput.names) {
-			let promise = encodeImageToBase64({
+			let promise = this.getImageObject({
 				"name": name,
 				"dirName": oInput.dirName,
 				"type": oInput.type
@@ -193,20 +214,194 @@ class DataService {
 	 * }
 	 * @returns {Promise<ImageModel>}
 	 */
-	encodeImageToBase64(oInput) {
+	getImageObject(oInput) {
 		return new Promise((resolve, reject) => {
 			let filePath = path.join(oInput.dirName, oInput.name);
+			let itemClientPath = ['..', '..', 'assets', 'images', oInput.type, oInput.name].join('/');
 			fs.readFile(filePath, function (err, data) {
 				if (err) reject(err);
-				// Encode to base64
-				let base64Data = new Buffer(data, 'binary').toString('base64');
 				let dimensions = sizeOf(filePath);
-				resolve(new ImageModel(oInput.name, oInput.type, dimensions, base64Data));
+				resolve(new ImageModel(oInput.name, oInput.type, itemClientPath, dimensions, base64Data));
 			});
 		});
 	}
 
+	/**
+	 *
+	 */
 	seedDb() {
+		this.setUpConnectionString()
+			.then(this.connectToDb)
+			// .then(this.dropImagesCollection)
+			.then(this.createImagesCollection)
+			.then(this.getAllImageNames.bind(this))
+			.then(this.getAllImages.bind(this))
+			.then(this.seedDbWithImages)
+			.catch(this.handleSeedingError);
+	}
+
+	/**
+	 *
+	 * @param err
+	 */
+	handleSeedingError(err) {
+		console.log("dataService@handleSeedingError");
+		if (err.errmsg === "ns not found") console.log("No images collection - doing nothing");
+		else if (err.errmsg) console.log(err.errmsg);
+		else console.log(err);
+	}
+
+	/**
+	 *
+	 * @param oData
+	 * @returns {Promise}
+	 */
+	seedDbWithImages(oData) {
+		console.log("dataService@insertAllImagesToDb");
+		let images = oData.aImages,
+			imagesCollection = oData.oImagesCollection;
+		console.log(images[0]);
+		return new Promise((resolve, reject) => {
+			imagesCollection.insertMany(images)
+				.then(val => resolve({
+					"result": val,
+					"oImagesCollection": imagesCollection
+					})
+				)
+				.catch(reject);
+		});
+	}
+
+	/**
+	 *
+	 * @param imagesCollection
+	 * @returns {Promise}
+	 */
+	getAllImageNames(imagesCollection) {
+		console.log("dataService@getAllImageNames");
+		let	promises = [];
+		return new Promise((resolve, reject) => {
+			for (let type of supportedTypes) {
+				promises.push(this.getImageNames(type))
+			}
+			Promise.all(promises)
+				.then(imageNames => {
+					console.log("dataService@getAllImageNames - resolving");
+					resolve({
+						"imageNames": imageNames,
+						"imagesCollection": imagesCollection
+					})
+				})
+				.catch(reject);
+		});
+	}
+
+	/**
+	 *
+	 * @param oInput
+	 * @returns {Promise}
+	 */
+	getAllImages(oInput) {
+		let aImageNames = oInput.imageNames,
+			imagesCollection = oInput.imagesCollection;
+		console.log("dataService@getAllImages");
+		let promises = [],
+			aAllImages = [];
+		for (let imageNames of aImageNames) {
+			promises.push(this.getImageObjects(imageNames));
+		}
+		return new Promise((resolve, reject) => {
+			Promise.all(promises)
+				.then(aImages => {
+					for (let images of aImages) {
+						aAllImages  =aAllImages.concat(...images);
+					}
+					console.log("dataService@getAllImages - resolving");
+					resolve({
+						"aImages": aAllImages,
+						"oImagesCollection": imagesCollection
+					});
+				})
+				.catch(reject);
+		});
+	}
+
+	/**
+	 *
+	 * @param oClient
+	 * @returns {Promise}
+	 */
+	dropImagesCollection(oClient) {
+		console.log("dataService@dropImagesCollection");
+		let db = oClient.db("fridman"),
+			imagesCollection = db.collection("images");
+		return new Promise((resolve, reject) => {
+			imagesCollection.drop()
+				.then(() => {
+					console.log("dataService@dropImagesCollection - resolving");
+					resolve(oClient)
+				})
+				.catch(reject);
+		});
+	}
+
+	/**
+	 *
+	 * @param oClient
+	 * @returns {Promise}
+	 */
+	createImagesCollection(oClient) {
+		console.log("dataService@createImagesCollection");
+		let options = {
+			validator: {
+				$jsonSchema: {
+					bsonType: "object",
+					required: [ "imageName", "imageType", "imageLocation"],
+					properties: {
+						imageName: {
+							bsonType: "string"
+						},
+						imageType: {
+							enum: supportedTypes
+						},
+						imageLocation: {
+							bsonType: "string"
+						},
+						imageDimensions: {
+							bsonType: "object",
+							required: [ "height", "width", "type" ],
+							properties: {
+								height: {
+									bsonType: "int"
+								},
+								width: {
+									bsonType: "int"
+								},
+								type: {
+									bsonType: "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+
+		let db = oClient.db("fridman"),
+			imagesCollection = db.collection("images");
+		return new Promise((resolve, reject) => {
+			imagesCollection.countDocuments()
+				.then(val => {
+					if (val === 0) return db.createCollection("images", options);
+					else {
+						let error = new Error();
+						error.errmsg = "Collection already seeded";
+						return Promise.reject(error);
+					}
+				})
+				.then(resolve)
+				.catch(reject);
+		});
 
 	}
 }

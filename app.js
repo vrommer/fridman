@@ -1,16 +1,20 @@
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
 // var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-var api = require('./routes/api');
+const api = require('./routes/api');
 
-var globals = require('./globals');
+const globals = require('./globals');
+const DataService = require('./services/dataService').DataService;
 
-var app = express();
+const app = express();
 
+let dataService = new DataService();
+
+dataService.seedDb();
 app.locals.basePath = path.join(__dirname, 'public');
 
 // uncomment after placing your favicon in /public
