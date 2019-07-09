@@ -1,5 +1,5 @@
 <div class="app-carousel">
   <ng-content></ng-content>
-  <div class="app-carousel-navigation app-carousel-back-button" (click)="previousItem()"><fa-icon [icon]="leftIcon"></fa-icon></div>
-  <div class="app-carousel-navigation app-carousel-forward-button" (click)="nextItem()"><fa-icon [icon]="rightIcon"></fa-icon></div>
+  <div [ngClass]="{'app-carousel-navigation app-carousel-back-button': true, 'app-hoverable': isPrevBtnHoverable()}" (click)="previousItem()"><fa-icon [icon]="leftIcon"></fa-icon></div>
+  <div [ngClass]="{'app-carousel-navigation app-carousel-forward-button': true, 'app-hoverable': isNextBtnHoverable()}" (click)="nextItem()"><fa-icon [icon]="rightIcon"></fa-icon></div>
 </div>

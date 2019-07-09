@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
@@ -18,6 +18,8 @@ import {animate, style, transition, trigger} from "@angular/animations";
   ]
 })
 export class CarouselItemComponent implements OnInit {
+
+  @Input() display:number;
 
   _hidden: boolean;
 
@@ -45,7 +47,7 @@ export class CarouselItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.hide();
+    this._hidden = !this.display;
+    // this.hide();
   }
-
 }

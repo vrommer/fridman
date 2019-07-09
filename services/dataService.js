@@ -10,12 +10,15 @@ const MongoClient = require('mongodb').MongoClient;
 const globals = require('../globals');
 const lineReader = require('readline');
 const ImageModel = require('../model/ImageModel');
+const ObjectId = require('mongodb').ObjectID;
 
 const environment = "DEV"; /* "DEV" | "PROD" */
 const imagesPathsMap = new Map([
 	["DEV", ['..', 'angular-src', 'src', 'assets', 'images']],
 	["PROD", ['..', 'public', 'assets', 'images']]
 ]);
+
+const resultsPerPage = 20;
 
 const supportedTypes = ['calligraphy', 'drawings', 'sculptures'];
 
@@ -27,7 +30,10 @@ class DataService {
 		this.lr = lineReader.createInterface({
 			input: fs.createReadStream('db.properties')
 		});
-		this.dataCache = new Map();
+		this.dataCache = new Map([[supportedTypes[0], new Map()],
+			[supportedTypes[1], new Map()],
+			[supportedTypes[2], new Map()]
+		]);
 		this.setUpConnectionString()
 			.then(connStr => {
 				that.connectionString = connStr
@@ -94,8 +100,12 @@ class DataService {
 		oData.dataCache = this.dataCache;
 		return this.setUpConnectionString()
 			.then(this.connectToDb)
-			.then(this.getFromImagesCollection.bind(oData))
-			.catch(err => {
+			.then(oClient => this.getFromImagesCollection(oClient, oData))
+			.then(this.closeConnection)
+			.catch(oData => {
+				let err = oData.err,
+					oClient = oData.client;
+				oClient.close();
 				throw err;
 			});
 	}
@@ -115,41 +125,59 @@ class DataService {
 	 * @param oClient
 	 * @returns {Promise}
 	 */
-	getFromImagesCollection(oClient) {
+	getFromImagesCollection(oClient, oData) {
 		return new Promise((resolve, reject) => {
-			let imageType = this.imageType,
-				imageName = this.imageName,
+			let imageType = oData.imageType,
+				imageName = oData.imageName,
+				id = oData.id,
 				dataCache = this.dataCache,
 				db = oClient.db("fridman"),
-				imagesCollection = db.collection("images");
+				imagesCollection = db.collection("images"),
+				typeCache = dataCache.get(imageType),
+				images = typeCache.get(id),
+				filter = {
+					"imageType": imageType,
+				};
+			if (id) {
+				filter._id = {$gt: ObjectId(id)};
+			}
 			// TODO: Use 'limit' for pagination
 			// imagesCollection.find({imageType: imageType}).limit(2).toArray(function(err, docs) {
-			if (dataCache.get(imageType)) {
-				let docs = dataCache.get(imageType);
+			if (images) {
+				let docs = images;
 				if (imageName) {
 					let index = docs.map(image => image.imageName).indexOf(imageName);
 					let start = docs.slice(index, docs.length);
 					let end = docs.slice(0, index);
 					docs = [...start, ...end];
 				}
-				resolve(docs);
+				resolve({
+					docs: docs,
+					client: oClient
+				});
 			}
 			else {
-				imagesCollection.find({imageType: imageType}).toArray(function(err, docs) {
+				imagesCollection.find(filter).limit(resultsPerPage).toArray(function(err, docs) {
 					if (err) {
-						oClient.close();
-						reject(err);
+						// oClient.close();
+						reject({
+							err: err,
+							client: oClient
+						});
 					}
 					else {
-						dataCache.set(imageType, docs);
+						typeCache.set(id, docs);
 						if (imageName) {
 							let index = docs.map(image => image.imageName).indexOf(imageName);
 							let start = docs.slice(index, docs.length);
 							let end = docs.slice(0, index);
 							docs = [...start, ...end];
 						}
-						resolve(docs);
-						oClient.close();
+						resolve({
+							docs: docs,
+							client: oClient
+						});
+						// oClient.close();
 					}
 				});
 			}
@@ -237,14 +265,26 @@ class DataService {
 			.then(this.getAllImageNames.bind(this))
 			.then(this.getAllImages.bind(this))
 			.then(this.seedDbWithImages)
+			.then(this.closeConnection)
 			.catch(this.handleSeedingError);
+	}
+
+	closeConnection(oData) {
+		let oClient = oData.client;
+		oClient.close();
+		return Promise.resolve(oData);
 	}
 
 	/**
 	 *
 	 * @param err
 	 */
-	handleSeedingError(err) {
+	handleSeedingError(oData) {
+		let err = oData.err,
+			oClient = oData.client;
+		if (oClient) {
+			oClient.close();
+		}
 		console.log("dataService@handleSeedingError");
 		if (err.errmsg === "ns not found") console.log("No images collection - doing nothing");
 		else if (err.errmsg) console.log(err.errmsg);
@@ -259,16 +299,23 @@ class DataService {
 	seedDbWithImages(oData) {
 		console.log("dataService@insertAllImagesToDb");
 		let images = oData.aImages,
-			imagesCollection = oData.oImagesCollection;
+			imagesCollection = oData.oImagesCollection,
+			oClient = oData.client;
 		console.log(images[0]);
 		return new Promise((resolve, reject) => {
 			imagesCollection.insertMany(images)
 				.then(val => resolve({
-					"result": val,
-					"oImagesCollection": imagesCollection
-					})
-				)
-				.catch(reject);
+					result: val,
+					oImagesCollection: imagesCollection,
+					client: oClient
+				})
+			)
+			.catch(err => {
+				reject({
+					err: err,
+					client: oClient
+				})
+			});
 		});
 	}
 
@@ -277,9 +324,11 @@ class DataService {
 	 * @param imagesCollection
 	 * @returns {Promise}
 	 */
-	getAllImageNames(imagesCollection) {
+	getAllImageNames(oData) {
 		console.log("dataService@getAllImageNames");
-		let	promises = [];
+		let	imagesCollection = oData.imagesCollection,
+			oClient = oData.client,
+			promises = [];
 		return new Promise((resolve, reject) => {
 			for (let type of supportedTypes) {
 				promises.push(this.getImageNames(type))
@@ -288,22 +337,29 @@ class DataService {
 				.then(imageNames => {
 					console.log("dataService@getAllImageNames - resolving");
 					resolve({
-						"imageNames": imageNames,
-						"imagesCollection": imagesCollection
+						imageNames: imageNames,
+						imagesCollection: imagesCollection,
+						client: oClient
 					})
 				})
-				.catch(reject);
+				.catch(err => {
+					reject({
+						err: err,
+						client: oClient
+					})
+				});
 		});
 	}
 
 	/**
 	 *
-	 * @param oInput
+	 * @param oData
 	 * @returns {Promise}
 	 */
-	getAllImages(oInput) {
-		let aImageNames = oInput.imageNames,
-			imagesCollection = oInput.imagesCollection;
+	getAllImages(oData) {
+		let aImageNames = oData.imageNames,
+			imagesCollection = oData.imagesCollection,
+			oClient = oData.client;
 		console.log("dataService@getAllImages");
 		let promises = [],
 			aAllImages = [];
@@ -318,11 +374,17 @@ class DataService {
 					}
 					console.log("dataService@getAllImages - resolving");
 					resolve({
-						"aImages": aAllImages,
-						"oImagesCollection": imagesCollection
+						aImages: aAllImages,
+						oImagesCollection: imagesCollection,
+						client: oClient
 					});
 				})
-				.catch(reject);
+				.catch(err => {
+					reject({
+						err: err,
+						client: oClient
+					})
+				});
 		});
 	}
 
@@ -399,8 +461,18 @@ class DataService {
 						return Promise.reject(error);
 					}
 				})
-				.then(resolve)
-				.catch(reject);
+				.then(imagesCollection => {
+					resolve({
+						imagesCollection: imagesCollection,
+						client: oClient
+					})
+				})
+				.catch(err => {
+					reject({
+						err: err,
+						client: oClient
+					})
+				});
 		});
 
 	}

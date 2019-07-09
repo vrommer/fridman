@@ -14,7 +14,6 @@ export class MainHeaderComponent implements OnInit {
   @ViewChild(NavComponent) navComponent;
 
   faUser = faUser;
-  faCoffee = faCoffee;
 
   constructor(private headerService:HeaderService) {
     headerService.routeChanged$.subscribe(param => this.navComponent.currentRoute = param);

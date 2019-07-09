@@ -1,10 +1,8 @@
 <div class="container mf-arts-grid">
   <div id="arts-grid" class="row" (click)="showDetails($event)">
-    <div *ngFor="let col of sourcesGrid" class="col-3">
+    <div *ngFor="let col of grid" class="col-3">
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">
-        <!--@showHide *ngIf="source.show"-->
         <div class="mf-arts-item" @showHide *ngIf="source.show">
-        <!--<div class="mf-arts-item" @showHide>-->
           <mf-arts-item>
             <img [id]="source.id" [src]="source.path" class="img-fluid mfArtWorkThumbnail" alt="Card image cap">
           </mf-arts-item>

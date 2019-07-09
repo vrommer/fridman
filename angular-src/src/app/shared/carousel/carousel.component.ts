@@ -1,60 +1,48 @@
 import {
-  AfterViewInit, Component, ContentChildren, ElementRef, Input, OnInit,
-  QueryList
+  AfterContentInit, Component, ContentChildren, Input,
+  QueryList, Output, EventEmitter, AfterViewInit, ViewChild
 } from '@angular/core';
 import {CarouselItemComponent} from "./carousel-item/carousel-item.component";
 import {CarouselMode} from "./carousel-utils/carousel-mode";
 import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
 import {faAngleRight} from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {Subject} from "rxjs/index";
 
 @Component({
   selector: 'mf-carousel',
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss']
 })
-export class CarouselComponent implements OnInit, AfterViewInit {
+export class CarouselComponent implements AfterViewInit, AfterContentInit {
+  @Output() fewItemsLeft: EventEmitter<any> = new EventEmitter();
 
   @Input() viewMode: CarouselMode = CarouselMode.manual;
+  @Input() pointer: number;
   @Input() delay: number;
   @ContentChildren(CarouselItemComponent) items: QueryList<CarouselItemComponent>;
 
-  private _pointer: number;
-  private _showing: boolean;
-
-  get showing() {
-    return this._showing;
-  }
+  private _lastFewPages = 5;
 
   itemsArray: CarouselItemComponent[];
 
   leftIcon = faAngleLeft;
   rightIcon = faAngleRight;
 
-  mutationObserver: MutationObserver;
+  constructor() {
 
-  constructor(private el: ElementRef) {
-    this._pointer = -1;
-    let config = { attributes: true, childList: true, subtree: true };
-    // Track changes of elements length
-    this.mutationObserver = new MutationObserver(() => {
-      this.itemsArray = this.items.toArray();
-      if (!this.showing){
-        this.nextItem();
-      }
-    });
-    this.mutationObserver.observe(this.el.nativeElement, config)
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit(): void {
-    if (this.viewMode === CarouselMode.automatic) {
-      this.nextItemAuto();
-    } else if (this.viewMode === CarouselMode.manual) {
-      this.nextItem();
+    if (this.pointer === 0) {
+
     }
+  }
+
+  ngAfterContentInit(): void {
+    this.itemsArray = this.items.toArray();
+    this.items.changes.subscribe(() => {
+      this.itemsArray = this.items.toArray();
+    })
   }
 
   private showNextItemAuto = () => {
@@ -67,32 +55,34 @@ export class CarouselComponent implements OnInit, AfterViewInit {
   };
 
   public nextItem = () => {
-    if (this.itemsArray && this.itemsArray.length) {
-      this._showing = true;
-      // If no item has been displayed yet
-      if (this._pointer < 0) {
-        this._pointer = 0;
-        this.itemsArray[this._pointer].showNew();
+    if (this.itemsArray && this.itemsArray.length && this.pointer < (this.items.length - 1)) {
+      this.itemsArray[this.pointer].hide();
+      this.pointer++;
+      this.itemsArray[this.pointer].show();
+
+      if ((this.itemsArray.length - this.pointer) === this._lastFewPages) {
+        this.fewItemsLeft.emit(null);
       }
-      else {
-        this.itemsArray[this._pointer].hide();
-        this._pointer = ( this._pointer + 1 ) % this.items.length;
-        this.itemsArray[this._pointer].show();
-      }
-    } else {
-      this._showing = false;
-      this._pointer = -1;
     }
   };
 
   public previousItem = () => {
-    if (this._showing) {
-      this.itemsArray[this._pointer].hide();
-      this._pointer--;
-      if (this._pointer < 0){
-        this._pointer = this.items.length + this._pointer;
+    if (this.itemsArray && this.itemsArray.length && this.pointer > 0) {
+      this.itemsArray[this.pointer].hide();
+      this.pointer--;
+      if (this.pointer < 0){
+        this.pointer = this.items.length + this.pointer;
       }
-      this.itemsArray[this._pointer].show();
+      this.itemsArray[this.pointer].show();
     }
   };
+
+  public isNextBtnHoverable() {
+    return this.pointer < (this.itemsArray.length - 1);
+  }
+
+  public isPrevBtnHoverable() {
+    return this.pointer > 0;
+  }
+
 }

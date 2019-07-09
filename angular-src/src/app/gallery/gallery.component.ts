@@ -2,9 +2,9 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {HeaderComponent} from "./header/header.component";
 import {AppControlService} from "../core/services/app-control.service";
-import {ArtWork} from "../core/model/art-work";
 import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs/internal/operators";
+import {ArtWork} from "../core/model/art-work";
 
 @Component({
   selector: 'mf-gallery',
@@ -34,7 +34,8 @@ export class GalleryComponent implements OnInit {
 
   private _showDetails:boolean = false;
   private _showHeader:boolean = false;
-  public requestedItem:ArtWork;
+  public requestedItemId:string;
+  public sources:any;
 
   constructor(private control:AppControlService,
               private router:Router)
@@ -42,15 +43,6 @@ export class GalleryComponent implements OnInit {
     router.events.pipe(
       filter(e => e instanceof NavigationEnd)
     ).subscribe(e => { if ((e as NavigationEnd).url === '/gallery') this.router.navigateByUrl('/gallery/drawings') });
-  }
-
-  ngOnInit(): void {
-    this.showHeader = true;
-    this.control.detailsRequested$.subscribe(artWork => {
-      if (artWork) this.header.fixedHeader = false;
-      this.requestedItem = artWork;
-      this.showDetails = !!artWork;
-    });
   }
 
   get showDetails() {
@@ -67,6 +59,20 @@ export class GalleryComponent implements OnInit {
 
   set showHeader(val) {
     this._showHeader = val;
+  }
+
+  ngOnInit(): void {
+    this.showHeader = true;
+    this.control.detailsRequested$.subscribe(oData => {
+      if (oData){
+        this.header.fixedHeader = false;
+      }
+      if (oData) {
+        this.requestedItemId = oData.itemId;
+        this.sources = oData.sources;
+      }
+      this.showDetails = !!oData;
+    });
   }
 
 }
