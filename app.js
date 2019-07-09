@@ -19,12 +19,16 @@ app.locals.basePath = path.join(__dirname, 'public');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(logger('prod'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(globals.publicPath));
 
 app.use('/api', api);
+
+app.get('*', function(req, res){
+	res.sendfile(__dirname + '/public/index.html');
+});
 
 module.exports = app;

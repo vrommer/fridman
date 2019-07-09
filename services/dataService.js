@@ -12,10 +12,10 @@ const lineReader = require('readline');
 const ImageModel = require('../model/ImageModel');
 const ObjectId = require('mongodb').ObjectID;
 
-const environment = "DEV"; /* "DEV" | "PROD" */
+const environment = process.env.NODE_ENV || 'development';
 const imagesPathsMap = new Map([
-	["DEV", ['..', 'angular-src', 'src', 'assets', 'images']],
-	["PROD", ['..', 'public', 'assets', 'images']]
+	["development", ['..', 'angular-src', 'src', 'assets', 'images']],
+	["production", ['..', 'public', 'assets', 'images']]
 ]);
 
 const resultsPerPage = 20;
