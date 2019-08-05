@@ -98,16 +98,14 @@ class DataService {
 	getItems(oData) {
 		console.log("dataService@getImageType, ", oData);
 		oData.dataCache = this.dataCache;
-		return this.setUpConnectionString()
-			.then(this.connectToDb)
-			.then(oClient => this.getFromImagesCollection(oClient, oData))
-			.then(this.closeConnection)
-			.catch(oData => {
-				let err = oData.err,
-					oClient = oData.client;
-				oClient.close();
-				throw err;
-			});
+		return new Promise((resolve, reject) => {
+			this.setUpConnectionString()
+				.then(this.connectToDb)
+				.then(oClient => this.getFromImagesCollection(oClient, oData))
+				.then(resolve)
+				.then(this.closeConnection)
+				.catch(reject);
+		});
 	}
 
 	/**
@@ -245,11 +243,11 @@ class DataService {
 	getImageObject(oInput) {
 		return new Promise((resolve, reject) => {
 			let filePath = path.join(oInput.dirName, oInput.name);
-			let itemClientPath = ['..', '..', 'assets', 'images', oInput.type, oInput.name].join('/');
+			let itemClientPath = ['https://storage.googleapis.com', 'fridman', 'images', oInput.type, oInput.name].join('/');
 			fs.readFile(filePath, function (err, data) {
 				if (err) reject(err);
 				let dimensions = sizeOf(filePath);
-				resolve(new ImageModel(oInput.name, oInput.type, itemClientPath, dimensions, base64Data));
+				resolve(new ImageModel(oInput.name, oInput.type, itemClientPath, dimensions));
 			});
 		});
 	}
@@ -269,10 +267,10 @@ class DataService {
 			.catch(this.handleSeedingError);
 	}
 
-	closeConnection(oData) {
+	closeConnection() {
 		let oClient = oData.client;
 		oClient.close();
-		return Promise.resolve(oData);
+		return Promise.resolve();
 	}
 
 	/**

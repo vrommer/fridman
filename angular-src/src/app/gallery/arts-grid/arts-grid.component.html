@@ -4,7 +4,8 @@
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">
         <div class="mf-arts-item" @showHide *ngIf="source.show">
           <mf-arts-item>
-            <img [id]="source.id" [src]="source.path" class="img-fluid mfArtWorkThumbnail" alt="Card image cap">
+            <img [id]="source.id" [src]="source.path" class="img-fluid mfArtWorkThumbnail" alt="Card image cap"
+                 (onload)="onImageLoaded()">
           </mf-arts-item>
         </div>
       </div>

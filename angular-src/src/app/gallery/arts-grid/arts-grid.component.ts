@@ -172,6 +172,10 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     }
   }
 
+  onImageLoaded() {
+    console.log("Loaded!");
+  }
+
   showDetails(event) {
     event.stopPropagation();
     // get the id to get
