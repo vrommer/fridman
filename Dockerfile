@@ -5,9 +5,15 @@ MAINTAINER Vadim Rommer <vadim.rommer@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN npm install -g @angular/cli
 RUN git clone https://github.com/vrommer/fridman.git
-WORKDIR "fridman"
+WORKDIR "/fridman"
+COPY db.properties .
 RUN npm install
-WORKDIR "angular-src"
+WORKDIR "/fridman/angular-src"
 RUN npm install
 RUN ["ng", "build"]
+WORKDIR "/fridman"
+RUN rm -rf angular-src
+RUN pwd
 EXPOSE 8000
+ENTRYPOINT exec npm start
+
