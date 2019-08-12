@@ -10,10 +10,10 @@ COPY db.properties .
 RUN npm install
 WORKDIR "/fridman/angular-src"
 RUN npm install
-RUN ["ng", "build"]
+RUN ["ng", "build", "--prod"]
 WORKDIR "/fridman"
 RUN rm -rf angular-src
 RUN pwd
-EXPOSE 8000
+EXPOSE 3000
 ENTRYPOINT exec npm start
 
