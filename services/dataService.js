@@ -45,6 +45,7 @@ class DataService {
 	 * @returns {Promise}
 	 */
 	setUpConnectionString() {
+		console.log("dataService@setUpConnectionString");
 		let that = this,
 			connectionString;
 		return new Promise((resolve, reject) => {
@@ -75,6 +76,7 @@ class DataService {
 	 * @returns {Promise}
 	 */
 	connectToDb(connectionString) {
+		console.log("dataService@connectToDb, connStr: ", connectionString);
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(connectionString, {useNewUrlParser: true}, function (err, client) {
 				try {
@@ -96,14 +98,17 @@ class DataService {
 	 * @returns {Promise}
 	 */
 	getItems(oData) {
-		console.log("dataService@getImageType, ", oData);
+		console.log("dataService@getImageType");
+		let items;
 		oData.dataCache = this.dataCache;
 		return new Promise((resolve, reject) => {
 			this.setUpConnectionString()
 				.then(this.connectToDb)
 				.then(oClient => this.getFromImagesCollection(oClient, oData))
-				.then(resolve)
+				.then(aItems => items = aItems)
 				.then(this.closeConnection)
+				.then(() => console.log("Connection closed."))
+				.then(() => resolve(items))
 				.catch(reject);
 		});
 	}
@@ -124,6 +129,7 @@ class DataService {
 	 * @returns {Promise}
 	 */
 	getFromImagesCollection(oClient, oData) {
+		console.log("dataService@getFromImagesCollection of type:", oData.imageType );
 		return new Promise((resolve, reject) => {
 			let imageType = oData.imageType,
 				imageName = oData.imageName,
@@ -219,6 +225,7 @@ class DataService {
 	 * @returns {Promise.<{ImageModel[]}>}
 	 */
 	getImageObjects(oInput) {
+		console.log("dataService@getImageObjects of type: ", oInput.type);
 		let promises = [];
 		for (let name of oInput.names) {
 			let promise = this.getImageObject({
@@ -264,13 +271,19 @@ class DataService {
 			.then(this.getAllImages.bind(this))
 			.then(this.seedDbWithImages)
 			.then(this.closeConnection)
-			.catch(this.handleSeedingError);
+			.catch(this.handleSeedingError.bind(this));
 	}
 
-	closeConnection() {
-		let oClient = oData.client;
-		oClient.close();
-		return Promise.resolve();
+	closeConnection(oData) {
+		console.log("dataService@closeConnection");
+		return new Promise((resolve, reject) => {
+			try {
+				let oClient = oData.client;
+				oClient.close(resolve);
+			} catch (e) {
+				reject(e);
+			}
+		});
 	}
 
 	/**
@@ -287,6 +300,9 @@ class DataService {
 		if (err.errmsg === "ns not found") console.log("No images collection - doing nothing");
 		else if (err.errmsg) console.log(err.errmsg);
 		else console.log(err);
+		this.closeConnection(oData)
+			.then(() => console.log("Connection closed."))
+			.catch(err => console.log(err));
 	}
 
 	/**
