@@ -4,7 +4,7 @@ import {AppControlService} from "../../core/services/app-control.service";
 import {ArtWork} from "../../core/model/art-work";
 import {ArtsService} from "../../core/services/arts.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {timer} from "rxjs/index";
+import {Subscription, timer} from "rxjs/index";
 import {DataService} from "./Services/data.service";
 
 // Globals
@@ -24,9 +24,11 @@ import {DataService} from "./Services/data.service";
 
 export class ArtsGridComponent implements OnInit, OnDestroy {
 
+  private _routeSubscription: Subscription;
+  private _dataSubscription: Subscription;
+  private _moreDataSubscription: Subscription;
   private _sources: ArtWork[];
   private _sourcesGrid: ArtWork[][];
-  private _apiUrl: string;
   private _type: string;
   private _fnGetData: Function;
   private _cache: Map<string, ArtWork[]>;
@@ -48,9 +50,8 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.apiUrl = 'http://localhost:3000/api';
     this.cache = new Map<string, ArtWork[]>();
-    this.route.params.subscribe( p => {
+    this._routeSubscription = this.route.params.subscribe( p => {
       this.sources = null;
       this.grid = null;
       this.category = p.param;
@@ -59,21 +60,35 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
       this.page = 1;
     });
 
-    this.control.dataRequested$.subscribe(() => {
+    this._dataSubscription = this.control.dataRequested$.subscribe(() => {
       this.control.provideData(this.sources);
     });
 
-    this.control.moreDataRequested$.subscribe(() => {
-      console.log("Requesting more data");
+    this._moreDataSubscription = this.control.moreDataRequested$.subscribe(() => {
       this.page++;
       this.fnGetData(this.category);
     })
   }
 
   ngOnDestroy(): void {
+    this.routeSubscription.unsubscribe();
+    this.dataSubscription.unsubscribe();
+    this.moreDataSubscription.unsubscribe();
   }
 
   // ---------------------- GETTER/SETTER -----------------------
+
+  get routeSubscription() {
+    return this._routeSubscription;
+  }
+
+  get dataSubscription() {
+    return this._dataSubscription;
+  }
+
+  get moreDataSubscription() {
+    return this._moreDataSubscription;
+  }
 
   get sources() {
     return this._sources;
@@ -81,10 +96,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
   get grid() {
     return this._sourcesGrid;
-  }
-
-  get apiUrl() {
-    return this._apiUrl;
   }
 
   get category() {
@@ -109,10 +120,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
   set grid(val) {
     this._sourcesGrid = val;
-  }
-
-  set apiUrl(val) {
-    this._apiUrl = val;
   }
 
   set category(val) {
@@ -141,6 +148,7 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
       }
       fetchingData = true;
       this.dataService.getArtifacts(type, lastId).subscribe(r => {
+        fetchingData = false;
         if (!r || !r.length) {
           return;
         }
@@ -164,7 +172,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
             this.sources[sourceIndex].showItem = true;
           }
           lastIndex = this.sources.length;
-          fetchingData = false;
         });
 
         this.control.provideData(this.sources);
