@@ -2,7 +2,7 @@
  * Created by i306534 on 18/08/2019.
  */
 export const mockData = {
-    mockImages: [
+    mockImages: new Map([
         [
             'drawings', [
             {
@@ -107,6 +107,6 @@ export const mockData = {
             }
         ]
         ]
-    ]
+    ])
 };
 

@@ -10,7 +10,7 @@ fdescribe('CloseUpComponent', () => {
   let component: CloseUpComponent;
   let closeUpElement: HTMLElement;
   let fixture: ComponentFixture<CloseUpComponent>;
-  const mockDataMap = new Map(mockData.mockImages);
+  const mockDataMap = mockData.mockImages;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,7 +28,7 @@ fdescribe('CloseUpComponent', () => {
     fixture = TestBed.createComponent(CloseUpComponent);
     component = fixture.componentInstance;
     closeUpElement = fixture.nativeElement;
-    closeUpElement.style.opacity = 0;
+    closeUpElement.style.opacity = '0';
     fixture.detectChanges();
   });
 
@@ -36,5 +36,27 @@ fdescribe('CloseUpComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should view correct item', () => {
 
+  });
+
+  it('should view next item', () => {
+
+  });
+
+  it('should view previous item', () => {
+
+  });
+
+  it('should load more items when reaching the end of items list', () => {
+
+  });
+
+  it('should not disable next button at last item', () => {
+
+  });
+
+  it('should disable previous button on first item', () => {
+
+  });
 });

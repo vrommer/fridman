@@ -25,7 +25,7 @@ describe('ArtsGridComponent', () => {
     params: routerParamSubject.asObservable()
   };
 
-  const mockDataMap = new Map(mockData.mockImages);
+  const mockDataMap = mockData.mockImages;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
