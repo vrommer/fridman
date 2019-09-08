@@ -1,5 +1,4 @@
 import {Component, OnInit, OnDestroy, HostListener, Input} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 import {AppControlService} from "../../core/services/app-control.service";
 import {ArtWork} from "../../core/model/art-work";
 import {ArtsService} from "../../core/services/arts.service";
@@ -38,7 +37,7 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   onScroll(event) {
     if ((window.innerHeight + window.scrollY) > (document.body.offsetHeight - (document.body.offsetHeight/this._page))) {
       this.page++;
-      this.fnGetData(this.category);
+      this.fnGetData();
     }
   }
 
@@ -53,7 +52,7 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     this.sources = null;
     this.grid = null;
     this.fnGetData = this.retrieveGetDataFunction();
-    this.fnGetData(this.category);
+    this.fnGetData();
     this.page = 1;
 
     this._dataSubscription = this.control.dataRequested$.subscribe(() => {
@@ -62,7 +61,7 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
     this._moreDataSubscription = this.control.moreDataRequested$.subscribe(() => {
       this.page++;
-      this.fnGetData(this.category);
+      this.fnGetData();
     })
   }
 
@@ -125,14 +124,16 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   retrieveGetDataFunction() {
     let lastId,
         lastIndex = 0,
-        fetchingData = false,
-        subscription;
-    return function(type) {
+        fetchingData = false;
+    return function() {
       if (fetchingData) {
         return;
       }
+      if (!['drawings', 'calligraphy', 'sculptures'].includes(this.category)) {
+        return;
+      }
       fetchingData = true;
-      subscription = this.dataService.getArtifacts(type, lastId).subscribe(r => {
+      this.dataService.getArtifacts(this.category, lastId).subscribe(r => {
         fetchingData = false;
         if (!r || !r.length) {
           return;

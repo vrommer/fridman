@@ -15,6 +15,7 @@ import {Subject} from "rxjs/index";
 })
 export class CarouselComponent implements AfterViewInit, AfterContentInit {
   @Output() fewItemsLeft: EventEmitter<any> = new EventEmitter();
+  @Output() currentItem: EventEmitter<number> = new EventEmitter<number>();
 
   @Input() viewMode: CarouselMode = CarouselMode.manual;
   @Input() pointer: number;
@@ -58,9 +59,10 @@ export class CarouselComponent implements AfterViewInit, AfterContentInit {
     if (this.itemsArray && this.itemsArray.length && this.pointer < (this.items.length - 1)) {
       this.itemsArray[this.pointer].hide();
       this.pointer++;
+      this.currentItem.emit(this.pointer);
       this.itemsArray[this.pointer].show();
 
-      if ((this.itemsArray.length - this.pointer) === this._lastFewPages) {
+      if ((this.itemsArray.length - this.pointer) <= this._lastFewPages) {
         this.fewItemsLeft.emit(null);
       }
     }

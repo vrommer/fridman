@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NavComponent} from "../nav/nav.component";
 import {HeaderService} from "../services/header.service";
 import {HeaderModel} from "../header-model";
-import {faCoffee, faUser} from '@fortawesome/free-solid-svg-icons';
+import {faUser} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'mf-main-header',

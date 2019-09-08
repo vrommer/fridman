@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {HeaderComponent} from "./header/header.component";
 import {AppControlService} from "../core/services/app-control.service";
 import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs/internal/operators";
-import {ArtWork} from "../core/model/art-work";
+import {Subscription} from "rxjs/index";
 
 @Component({
   selector: 'mf-gallery',
@@ -28,19 +28,21 @@ import {ArtWork} from "../core/model/art-work";
     ])
   ]
 })
-export class GalleryComponent implements OnInit {
+export class GalleryComponent implements OnInit, OnDestroy {
 
   @ViewChild(HeaderComponent) header;
 
   private _showDetails:boolean = false;
   private _showHeader:boolean = false;
+  private _routerSubscription:Subscription;
+  private _detailsRequestedSubscription:Subscription;
   public requestedItemId:string;
   public sources:any;
 
   constructor(private control:AppControlService,
               private router:Router)
   {
-    router.events.pipe(
+    this._routerSubscription = router.events.pipe(
       filter(e => e instanceof NavigationEnd)
     ).subscribe(e => { if ((e as NavigationEnd).url === '/gallery') this.router.navigateByUrl('/gallery/drawings') });
   }
@@ -63,11 +65,9 @@ export class GalleryComponent implements OnInit {
 
   ngOnInit(): void {
     this.showHeader = true;
-    this.control.detailsRequested$.subscribe(oData => {
+    this._detailsRequestedSubscription = this.control.detailsRequested$.subscribe(oData => {
       if (oData){
         this.header.fixedHeader = false;
-      }
-      if (oData) {
         this.requestedItemId = oData.itemId;
         this.sources = oData.sources;
       }
@@ -75,4 +75,8 @@ export class GalleryComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this._routerSubscription.unsubscribe();
+    this._detailsRequestedSubscription.unsubscribe();
+  }
 }

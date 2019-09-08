@@ -1,4 +1,6 @@
-import {Component, HostListener, Input, OnInit, OnDestroy} from '@angular/core';
+import {
+  Component, HostListener, Input, OnInit, OnDestroy
+} from '@angular/core';
 import {CarouselMode} from "../../shared/carousel/carousel-utils/carousel-mode";
 import {AppControlService} from "../../core/services/app-control.service";
 import {Subscription} from "rxjs/index";
@@ -26,9 +28,13 @@ export class CloseUpComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    let firstRun = true;
     this._dataProviderSubscription = this.control.dataProvider$.subscribe(oData => {
       this._sources = oData;
-      this._itemIndex = this.findItemIndex(this.requestedItemId)
+      if (firstRun) {
+        this._itemIndex = this.findItemIndex(this.requestedItemId);
+        firstRun = false;
+      }
     });
     this.getData();
   }
@@ -55,6 +61,10 @@ export class CloseUpComponent implements OnInit, OnDestroy {
 
   getData() {
     this.control.requestData();
+  }
+
+  updateCurrentItemIndex(newIndex) {
+    this._itemIndex = newIndex;
   }
 
   findItemIndex(id) {

@@ -1,7 +1,7 @@
 <div class="mf-close-up-wall"></div>
 <div class="mf-close-up-img">
   <mf-carousel class="mf-carousel" [viewMode]="carouselMode" [pointer]="requestedItemIndex"
-               (fewItemsLeft)="getMoreData()">
+               (fewItemsLeft)="getMoreData()" (currentItem)="updateCurrentItemIndex($event)">
     <div class="mf-carousel-item" *ngFor="let item of sources; let i = index">
       <mf-carousel-item [display]="i === requestedItemIndex">
         <mf-arts-item>

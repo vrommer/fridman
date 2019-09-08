@@ -14,7 +14,5 @@ export class CalligraphyComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    // console.log(HeaderModel.constants);
   }
-
 }

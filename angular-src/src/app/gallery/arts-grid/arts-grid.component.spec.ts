@@ -2,28 +2,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtsGridComponent } from './arts-grid.component';
 import { ArtsItemComponent } from '../arts-item/arts-item.component'
-import { ActivatedRoute } from "@angular/router";
-import { Observable, Subject} from "rxjs/index";
+import { Observable} from "rxjs/index";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import Spy = jasmine.Spy;
 import {DataService} from "./Services/data.service";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {mockData} from "../../../../test_resources/mockData";
 import {AppControlService} from "../../core/services/app-control.service";
-import {mockData} from "../../../../../services/mockData";
 
 describe('ArtsGridComponent', () => {
+
   let component: ArtsGridComponent;
   let fixture: ComponentFixture<ArtsGridComponent>;
-  let router: ActivatedRoute;
   let artsGridElement: HTMLElement;
   let spyFn: Spy;
-
-  const routerParamSubject = new Subject<any>();
-  const drawingsParam = {'param': 'drawings'};
-  const calligraphyParam = {'param': 'calligraphy'};
-  const fakeActivatedRoute = {
-    params: routerParamSubject.asObservable()
-  };
+  let images: any;
 
   const mockDataMap = mockData.mockImages;
 
@@ -37,11 +30,7 @@ describe('ArtsGridComponent', () => {
         ArtsGridComponent,
         ArtsItemComponent
       ],
-      providers: [
-        {
-          provide: ActivatedRoute, useFactory: () => fakeActivatedRoute
-        }
-      ]
+      providers: []
     })
     .compileComponents();
   }));
@@ -49,9 +38,9 @@ describe('ArtsGridComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ArtsGridComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(ActivatedRoute);
     fixture.detectChanges();
-    artsGridElement= fixture.nativeElement;
+    artsGridElement = fixture.nativeElement;
+    images = artsGridElement.getElementsByClassName('mfArtWorkThumbnailContainer');
     spyFn = spyOn(DataService.prototype, 'getArtifacts').and.callFake((imageType, lastPage) => {
       return Observable.create(observer => {
         if (!lastPage) {
@@ -68,43 +57,72 @@ describe('ArtsGridComponent', () => {
   afterEach(() => {
     component = null;
     fixture = null;
-    router = null;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get data when url is changed', async(async() => {
-    let images = artsGridElement.getElementsByClassName('mfArtWorkThumbnailContainer');
+  it('should display drawings', async() => {
     expect(images.length).toBe(0, 'No images should be present yet.');
-    routerParamSubject.next(calligraphyParam);
+    expect(component.sources).not.toBeTruthy();
+    component.category = 'drawings';
+    component.fnGetData();
     await fixture.whenStable();
     fixture.detectChanges();
+    expect(component.sources).toBeTruthy();
     expect(images.length).toBe(2, '2 images should be displayed.');
-    routerParamSubject.next(drawingsParam);
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect(images.length).toBe(2, '2 images should be displayed.');
-    expect(spyFn.calls.count()).toEqual(2);
-    expect(spyFn.calls.argsFor(0)).toEqual(['calligraphy', undefined]);
-    expect(spyFn.calls.argsFor(1)).toEqual(['drawings', undefined]);
-  }));
+  });
 
-  it('should get additional data when page is scrolled', async(async() => {
-    let images = artsGridElement.getElementsByClassName('mfArtWorkThumbnailContainer');
-    routerParamSubject.next(drawingsParam);
+  it('should display sculptures', async() => {
+    expect(images.length).toBe(0, 'No images should be present yet.');
+    expect(component.sources).not.toBeTruthy();
+    component.category = 'sculptures';
+    component.fnGetData();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.sources).toBeTruthy();
+    expect(images.length).toBe(2, '2 images should be displayed.');
+  });
+
+  it('should display calligraphy', async() => {
+    expect(images.length).toBe(0, 'No images should be present yet.');
+    expect(component.sources).not.toBeTruthy();
+    component.category = 'calligraphy';
+    component.fnGetData();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.sources).toBeTruthy();
+    expect(images.length).toBe(2, '2 images should be displayed.');
+  });
+
+  it('should not display unknown categories', async() => {
+    expect(images.length).toBe(0, 'No images should be present yet.');
+    expect(component.sources).not.toBeTruthy();
+    component.category = 'dummy';
+    component.fnGetData();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.sources).not.toBeTruthy();
+    expect(images.length).toBe(0, 'No images should be present.');
+  });
+
+  it('should display more data on scroll', async() => {
+    expect(images.length).toBe(0, 'No images should be present yet.');
+    component.category = 'drawings';
+    component.fnGetData();
     await fixture.whenStable();
     window.dispatchEvent(new Event('scroll'));
     await fixture.whenStable();
     fixture.detectChanges();
+    expect(component.sources).toBeTruthy();
     expect(images.length).toBe(4, '4 images should be displayed.');
-  }));
+  });
 
-  it('should request image details when image is clicked', async(async() =>  {
-    let images = artsGridElement.getElementsByClassName('mfArtWorkThumbnailContainer');
+  it('should send details request to control', async() => {
     const showDetailsSpy = spyOn(AppControlService.prototype, 'requestDetails');
-    routerParamSubject.next(drawingsParam);
+    component.category = 'drawings';
+    component.fnGetData();
     await fixture.whenStable();
     fixture.detectChanges();
     (images[0] as HTMLElement).click();
@@ -112,5 +130,5 @@ describe('ArtsGridComponent', () => {
       sources: component.sources,
       itemId: null
     })
-  }));
+  });
 });
