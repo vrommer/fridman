@@ -76,7 +76,7 @@ class DataService {
 	 * @returns {Promise}
 	 */
 	connectToDb(connectionString) {
-		console.log("dataService@connectToDb, connStr: ", connectionString);
+		console.log("dataService@connectToDb");
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(connectionString, {useNewUrlParser: true}, function (err, client) {
 				try {
