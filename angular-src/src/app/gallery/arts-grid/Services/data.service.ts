@@ -10,7 +10,7 @@ export class DataService implements OnDestroy{
   private _currentType: string;
 
   constructor(private httpClient:HttpClient) {
-    this._apiUrl = `http://34.90.172.188:3000/api`;
+    this._apiUrl = `http://178.128.141.209:3000/api`;
     // this._apiUrl = `http://localhost:3000/api`;
   }
 
