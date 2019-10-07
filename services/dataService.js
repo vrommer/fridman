@@ -11,6 +11,7 @@ const globals = require('../globals');
 const lineReader = require('readline');
 const ImageModel = require('../model/ImageModel');
 const ObjectId = require('mongodb').ObjectID;
+const request = require('request');
 
 const environment = process.env.NODE_ENV || 'development';
 const imagesPathsMap = new Map([
