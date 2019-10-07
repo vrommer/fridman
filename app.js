@@ -29,22 +29,6 @@ app.use(express.static(globals.publicPath));
 app.use('/api', api);
 
 app.get('*', function(req, res){
-	let data = {
-		recepients: ["vadim.rommer@gmail.com"],
-		subject: "Fridman's Gallery",
-		message: "The gallery just had a visitor!"
-	};
-	request.post({
-			url: 'http://174.138.105.248/notifications',
-			json: true,
-			body: data
-		},
-		function(error, response, user){
-			if (error) return console.error('Error sending notification');
-			console.log("Status code: %s", response.statusCode);
-		}
-	);
-
 	res.sendFile(__dirname + '/public/index.html');
 });
 

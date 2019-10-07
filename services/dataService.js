@@ -99,6 +99,22 @@ class DataService {
 	 */
 	getItems(oData) {
 		console.log("dataService@getImageType");
+		let data = {
+			recepients: ["vadim.rommer@gmail.com"],
+			subject: "Fridman's Gallery",
+			message: "Someone views " + oData.imageType
+		};
+		request.post({
+				url: 'http://174.138.105.248/notifications',
+				json: true,
+				body: data
+			},
+			function(error, response, user){
+				if (error) return console.error('Error sending notification');
+				console.log("Status code: %s", response.statusCode);
+			}
+		);
+
 		let items;
 		oData.dataCache = this.dataCache;
 		return new Promise((resolve, reject) => {
