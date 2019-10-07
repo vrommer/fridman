@@ -4,6 +4,7 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const request = require('request');
 
 const api = require('./routes/api');
 
@@ -28,7 +29,23 @@ app.use(express.static(globals.publicPath));
 app.use('/api', api);
 
 app.get('*', function(req, res){
-	res.sendfile(__dirname + '/public/index.html');
+	let data = {
+		recepients: ["vadim.rommer@gmail.com"],
+		subject: "Fridman's Gallery",
+		message: "The gallery just had a visitor!"
+	};
+	request.post({
+			url: 'http://174.138.105.248/notifications',
+			json: true,
+			body: data
+		},
+		function(error, response, user){
+			if (error) return console.error('Error sending notification');
+			console.log("Status code: %s", response.statusCode);
+		}
+	);
+
+	res.sendFile(__dirname + '/public/index.html');
 });
 
 module.exports = app;

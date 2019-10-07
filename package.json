@@ -16,6 +16,7 @@
     "jsonschema": "^1.2.4",
     "mongodb": "^3.2.1",
     "morgan": "^1.9.1",
+    "request": "^2.88.0",
     "serve-favicon": "~2.4.2"
   }
 }
