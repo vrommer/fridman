@@ -34,11 +34,10 @@ router.get('/:type/', function (req, res, next) {
 	if (!notified) {
 		notified = true;
 		setTimeout(() => { notified = false }, 30000);
-		let referrer = req.headers['x-forwarded-for'] || req.connection.remoteAddress,
 			data = {
 				recepients: ["vadim.rommer@gmail.com"],
 				subject: "Fridman's Gallery",
-				message: `The gallery just had the visitor ${referrer}!`
+				message: `The gallery just had the visitor!`
 			};
 		request.post({
 				url: 'http://174.138.105.248/notifications',
