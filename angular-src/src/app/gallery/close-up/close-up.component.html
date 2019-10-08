@@ -1,4 +1,8 @@
-<div class="mf-close-up-wall"></div>
+<div class="mf-close-up-wall">
+</div>
+<button type="button" id="mf-exit-close-up" class="close" aria-label="Close" (click)="exitCloseUp()">
+  <span aria-hidden="true">&times;</span>
+</button>
 <div class="mf-close-up-img">
   <mf-carousel class="mf-carousel" [viewMode]="carouselMode" [pointer]="requestedItemIndex"
                (fewItemsLeft)="getMoreData()" (currentItem)="updateCurrentItemIndex($event)">

@@ -15,8 +15,8 @@ export class CloseUpComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: auto");
-    this.control.requestDetails(null);
+    event.preventDefault();
+    this.exitCloseUp();
   }
 
   private _carouselMode: CarouselMode = CarouselMode.manual;
@@ -74,6 +74,11 @@ export class CloseUpComponent implements OnInit, OnDestroy {
       }
     }
     return 0;
+  }
+
+  exitCloseUp() {
+    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: auto");
+    this.control.requestDetails(null);
   }
 
 }
