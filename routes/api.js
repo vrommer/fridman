@@ -30,7 +30,7 @@ router.get('/', function (req, res, next) {
 		);
 });
 
-router.get('/:type/', function (req, res) {
+router.get('/:type/', function (req, res, next) {
 	if (!notified) {
 		notified = true;
 		setTimeout(() => { notified = false }, 30000);
@@ -48,18 +48,24 @@ router.get('/:type/', function (req, res) {
 			function(error, response, user){
 				if (error) return console.error('Error sending notification');
 				console.log("Status code: %s", response.statusCode);
-				dataService.getItems({
-					imageType: req.params.type
-				})
-					.then(data => {
-						res.jsonp(data.docs);
-					})
-					.catch(err => {
-						res.status(404).jsonp(err);
-					});
+				next();
 			}
 		);
+	} else {
+		next();
 	}
+});
+
+router.get('/:type/', function (req, res) {
+	dataService.getItems({
+		imageType: req.params.type
+	})
+	.then(data => {
+		res.jsonp(data.docs);
+	})
+	.catch(err => {
+		res.status(404).jsonp(err);
+	});
 });
 
 router.get('/:type/page/:id', function (req, res) {
