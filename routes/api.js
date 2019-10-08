@@ -6,6 +6,7 @@ const assert = require('assert');
 const globals = require('../globals');
 const DataService = require('../services/dataService').DataService;
 // import { DataService } from "../services/dataService";
+const request = require('request');
 
 const dataService = new DataService();
 
@@ -29,15 +30,31 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/:type/', function (req, res) {
-	dataService.getItems({
-		imageType: req.params.type
-	})
-	.then(data => {
-		res.jsonp(data.docs);
-	})
-	.catch(err => {
-		res.status(404).jsonp(err);
-	});
+	let referrer = req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+		data = {
+		recepients: ["vadim.rommer@gmail.com"],
+		subject: "Fridman's Gallery",
+		message: `The gallery just had the visitor ${referrer}!`
+	};
+	request.post({
+			url: 'http://174.138.105.248/notifications',
+			json: true,
+			body: data
+		},
+		function(error, response, user){
+			if (error) return console.error('Error sending notification');
+			console.log("Status code: %s", response.statusCode);
+			dataService.getItems({
+				imageType: req.params.type
+			})
+			.then(data => {
+				res.jsonp(data.docs);
+			})
+			.catch(err => {
+				res.status(404).jsonp(err);
+			});
+		}
+	);
 });
 
 router.get('/:type/page/:id', function (req, res) {
