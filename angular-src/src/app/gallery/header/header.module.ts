@@ -6,18 +6,23 @@ import { NavComponent } from './nav/nav.component';
 import { MainHeaderComponent } from './main-header/main-header.component';
 import { GalleryRoutingModule } from "../gallery-routing.module";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {UsersModule} from "../../users/users.module";
+import {UsersComponent} from "../../users/users.component";
 
 @NgModule({
   imports: [
     CommonModule,
     GalleryRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+
+    UsersModule
   ],
   declarations: [
     HeaderComponent,
     FixedHeaderComponent,
     NavComponent,
     MainHeaderComponent
+
   ],
   exports: [HeaderComponent],
   entryComponents: [HeaderComponent]

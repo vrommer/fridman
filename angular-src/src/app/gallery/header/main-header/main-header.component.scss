@@ -7,16 +7,36 @@
   background: white;
 
   .mf-users-menu {
+    position: relative;
     display: block;
     text-align: right;
 
     .mf-users-menu-button {
       display: inline-block;
-
-      a {
-        color: #000;
-        padding: 0 8px;
+      padding: 0 8px;
+      &:hover {
+        cursor: pointer;
       }
+    }
+
+    .mf-users-form-container {
+      position: absolute;
+      top: 35px;
+      right: 0;
+      background: yellow;
+      z-index: 10;
+    }
+
+    .mf-hide-form {
+      height: 0;
+      width: 0;
+      animation: hide-users-form 0.8s;
+    }
+
+    .mf-display-form {
+      height: 400px;
+      width: 300px;
+      animation: show-users-form 0.8s;
     }
 
     .mf-nav {
@@ -24,4 +44,16 @@
     }
   }
 
+}
+
+@keyframes show-users-form {
+  0%   {width: 0; height: 3px;}
+  50%  {width: 300px; height: 3px;}
+  100% {width: 300px; height: 400px;}
+}
+
+@keyframes hide-users-form {
+  0%   {width: 300px; height: 400px;}
+  50%  {width: 300px; height: 3px;}
+  100% {width: 0; height: 3px;}
 }

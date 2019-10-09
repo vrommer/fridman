@@ -6,11 +6,18 @@
       </a>
       <div>
         <div class="mf-users-menu">
-          <div class="mf-users-menu-button">
-            <a class="nav-item nav-link" href="users"><fa-icon [icon]="faUser"></fa-icon></a>
+          <div class="mf-users-menu-button" (click)="toggleUsersForm()">
+            <fa-icon [icon]="faUser"></fa-icon>
+          </div>
+          <div [ngClass]="{'mf-users-form-container':true,
+                           'mf-display-form': usersFormDisplayed,
+                           'mf-hide-form': usersFormHidden}">
+            <div id="mf-users-form">
+              <mf-users *ngIf="usersFormDisplayed"></mf-users>
+            </div>
           </div>
         </div>
-        <div class="mf-nav">
+        <div [ngClass]="{'mf-nav':true}">
           <mf-nav></mf-nav>
         </div>
       </div>
