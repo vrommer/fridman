@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
 
 @Component({
   selector: 'mf-users',
@@ -7,9 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsersComponent implements OnInit {
 
+  private selectedElement:string;
   constructor() { }
 
   ngOnInit() {
+    this.selectedElement = 'logIn';
+  }
+
+  isSelected(val) {
+    return this.selectedElement == val;
+  }
+
+  select(val) {
+    this.selectedElement = val;
   }
 
 }

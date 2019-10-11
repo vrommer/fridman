@@ -1,25 +1,22 @@
 #mf-users-container {
-  .container {
-    //background: yellow;
+  .mf-form-select-btn {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
   }
   .mf-col {
-    //background: green;
     text-align: center;
-    //letter-spacing: 0.15em;
-    padding: 15px 20px;
+    padding: 30px 5px 5px;
     position: relative;
-    //text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
     &:after {
-      //background: none repeat scroll 0 0 transparent;
       bottom: 0;
       content: "";
       display: block;
       height: 2px;
       left: 50%;
       position: absolute;
-      background: black;
+      background: grey;
       transition: width 0.3s ease 0s, left 0.3s ease 0s;
       width: 0;
     }
@@ -27,5 +24,8 @@
       width: 100%;
       left: 0;
     }
+  }
+  .mf-selected-form {
+    margin: 15px 10px;
   }
 }

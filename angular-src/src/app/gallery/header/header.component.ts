@@ -1,5 +1,5 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {animate, keyframes, style, transition, trigger} from "@angular/animations";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'mf-header',
@@ -9,12 +9,7 @@ import {animate, keyframes, style, transition, trigger} from "@angular/animation
     trigger('showHideFixedHeader', [
       transition(':enter', [
         style({ top: -40 }),
-        animate('0.4s', keyframes([
-          style({ top: -20, offset: 0.2 }),
-          style({ top: -10, offset: 0.3 }),
-          style({ top: -5, offset: 0.4 }),
-          style({ top: 0, offset: 1 })
-        ])),
+        animate('0.3s', style({ top: 0 }))
       ]),
       transition(':leave', [
         animate('0.1s', style({ top: -40 }))

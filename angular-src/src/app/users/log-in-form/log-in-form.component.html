@@ -1,0 +1,21 @@
+<div id="mf-log-in">
+  <form [formGroup]="logInForm" (submit)="submit()" novalidate>
+    <div class="form-group">
+      <input type="text"
+             [ngClass]="{'form-control': true, 'is-invalid': !emailIsValid}" placeholder="Email" formControlName="email">
+      <div class="invalid-feedback">
+        Please provide a valid email.
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="password"
+             [ngClass]="{'form-control': true, 'is-invalid': !passwordValid}" placeholder="Password" formControlName="password">
+      <div class="invalid-feedback">
+        Please enter a password.
+      </div>
+    </div>
+    <div class="float-left">
+      <button type="submit" class="btn btn-secondary">Log In!</button>
+    </div>
+  </form>
+</div>

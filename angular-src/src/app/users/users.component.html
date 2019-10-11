@@ -1,12 +1,18 @@
 <div id="mf-users-container">
   <div class="container">
     <div class="row">
-      <div class="mf-col col-4 offset-2">
+      <div [ngClass]="{'mf-col':true, 'col-5':true, 'offset-1':true, 'mf-form-select-btn': true}"
+           (click)="select('logIn')">
         Log in
       </div>
-      <div class="mf-col col-4">
+      <div [ngClass]="{'mf-col':true, 'col-5':true, 'mf-form-select-btn': true}"
+           (click)="select('signIn')">
         Sign up
       </div>
     </div>
+  </div>
+  <div class="mf-selected-form">
+    <mf-sign-in-form *ngIf="isSelected('signIn')"></mf-sign-in-form>
+    <mf-log-in-form *ngIf="isSelected('logIn')"></mf-log-in-form>
   </div>
 </div>

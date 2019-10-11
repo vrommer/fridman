@@ -170,7 +170,6 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   }
 
   showDetails(event) {
-    event.stopPropagation();
     // get the id to get
     let id = event.target.getAttribute("id");
     // show details

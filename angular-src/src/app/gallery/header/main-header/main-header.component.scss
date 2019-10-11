@@ -1,3 +1,6 @@
+$usersFormHeight: 370px;
+$usersFormWidth: 300px;
+
 .mf-header-title {
   display: block;
   font-size: 1.5em;
@@ -22,21 +25,23 @@
     .mf-users-form-container {
       position: absolute;
       top: 35px;
-      right: 0;
-      background: yellow;
+      right: -10px;
+      border: 1px solid lightgray;
+      border-radius: 3px;
+      box-shadow: 0 0 3px lightgrey;
+      background: whitesmoke;
+      color: grey;
       z-index: 10;
-    }
 
-    .mf-hide-form {
-      height: 0;
-      width: 0;
-      animation: hide-users-form 0.8s;
+      #mf-users-form {
+        animation: show-mf-nav 0.3s;
+      }
     }
 
     .mf-display-form {
-      height: 400px;
-      width: 300px;
-      animation: show-users-form 0.8s;
+      height: $usersFormHeight;
+      width: $usersFormWidth;
+      animation: show-users-form 0.6s;
     }
 
     .mf-nav {
@@ -46,14 +51,13 @@
 
 }
 
-@keyframes show-users-form {
-  0%   {width: 0; height: 3px;}
-  50%  {width: 300px; height: 3px;}
-  100% {width: 300px; height: 400px;}
+@keyframes show-mf-nav {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
 }
 
-@keyframes hide-users-form {
-  0%   {width: 300px; height: 400px;}
-  50%  {width: 300px; height: 3px;}
-  100% {width: 0; height: 3px;}
+@keyframes show-users-form {
+  0%   {width: 0; height: 2px;}
+  50%  {width: $usersFormWidth; height: 2px;}
+  100% {width: $usersFormWidth; height: $usersFormHeight;}
 }

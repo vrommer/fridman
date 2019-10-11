@@ -8,6 +8,7 @@ import { GalleryRoutingModule } from "../gallery-routing.module";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UsersModule} from "../../users/users.module";
 import {UsersComponent} from "../../users/users.component";
+import { CloseOnClickDirective } from './close-on-click.directive';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import {UsersComponent} from "../../users/users.component";
     HeaderComponent,
     FixedHeaderComponent,
     NavComponent,
-    MainHeaderComponent
+    MainHeaderComponent,
+    CloseOnClickDirective
 
   ],
   exports: [HeaderComponent],

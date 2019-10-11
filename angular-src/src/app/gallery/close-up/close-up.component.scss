@@ -11,10 +11,10 @@
 }
 
 #mf-exit-close-up {
-  position: absolute;
+  position: fixed;
   z-index: 100;
   top: 5px;
-  right: 5px;
+  right: 20px;
   font-size: 56px;
   color: aliceblue;
   opacity: 0.2;
