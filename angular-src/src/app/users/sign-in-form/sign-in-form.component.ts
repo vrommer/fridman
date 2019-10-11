@@ -10,8 +10,6 @@ export class SignInFormComponent implements OnInit {
 
   signInForm: FormGroup;
   wasValidated:boolean;
-  // firstNameValid:boolean;
-  // lastNameValid:boolean;
   emailIsValid:boolean;
   passwordValid:boolean;
   verifyPasswordValid:boolean;
@@ -21,18 +19,14 @@ export class SignInFormComponent implements OnInit {
 
   submit() {
     this.wasValidated = true;
-    // this.firstNameValid = this.signInForm.controls.name.controls.firstName.valid;
-    // this.lastNameValid = this.signInForm.controls.name.controls.lastName.valid;
     this.emailIsValid = this.signInForm.controls.email.valid;
-    this.passwordValid = this.signInForm.controls.password.controls.password.valid;
-    this.verifyPasswordValid = this.signInForm.controls.password.controls.validatePassword.valid;
+    this.passwordValid = (this.signInForm.controls.password as FormGroup).controls.password.valid;
+    this.verifyPasswordValid = (this.signInForm.controls.password as FormGroup).controls.validatePassword.valid;
   }
 
 
   ngOnInit() {
     this.wasValidated = false;
-    // this.firstNameValid = true;
-    // this.lastNameValid = true;
     this.emailIsValid = true;
     this.passwordValid = true;
     this.verifyPasswordValid = true;
