@@ -46,8 +46,7 @@ class DataService {
 	 */
 	setUpConnectionString() {
 		console.log("dataService@setUpConnectionString");
-		let that = this,
-			connectionString;
+		let	connectionString;
 		return new Promise((resolve, reject) => {
 			if (this.connectionString) {
 				Promise.resolve(this.connectionString)
@@ -55,13 +54,13 @@ class DataService {
 			}
 			else {
 				try {
-					this.lr.on('line', function (line) {
+					this.lr.on('line', (line) => {
 						let lineParts = line.split('=');
-						if (lineParts && lineParts.length === 2) that.credentials[lineParts[0]] = lineParts[1];
+						if (lineParts && lineParts.length === 2) this.credentials[lineParts[0]] = lineParts[1];
 					});
 					this.lr.on('close', () => {
-						connectionString = `mongodb+srv://${that.credentials.username}:` +
-							`${that.credentials.password}@${that.credentials.dburl}/fridman?retryWrites=true`;
+						connectionString = `mongodb+srv://${this.credentials.username}:` +
+							`${this.credentials.password}@${this.credentials.dburl}/fridman?retryWrites=true`;
 						resolve(connectionString);
 					});
 				} catch (ex) {
@@ -145,8 +144,6 @@ class DataService {
 			if (id) {
 				filter._id = {$gt: ObjectId(id)};
 			}
-			// TODO: Use 'limit' for pagination
-			// imagesCollection.find({imageType: imageType}).limit(2).toArray(function(err, docs) {
 			if (images) {
 				let docs = images;
 				if (imageName) {
