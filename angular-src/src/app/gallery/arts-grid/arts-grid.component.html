@@ -1,4 +1,10 @@
 <div class="container mf-arts-grid">
+  <!-- <mat-progress-spinner
+    class="example-margin"
+    [color]="color"
+    [mode]="mode"
+    [value]="value">
+  </mat-progress-spinner> -->
   <div id="arts-grid" class="row" (click)="showDetails($event)">
     <div *ngFor="let col of grid" class="col-3">
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">

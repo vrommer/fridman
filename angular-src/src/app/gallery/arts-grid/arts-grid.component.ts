@@ -1,10 +1,11 @@
 import {Component, OnInit, OnDestroy, HostListener, Input} from '@angular/core';
-import {AppControlService} from "../../core/services/app-control.service";
-import {ArtWork} from "../../core/model/art-work";
-import {ArtsService} from "../../core/services/arts.service";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Subscription, timer} from "rxjs/index";
-import {DataService} from "./Services/data.service";
+import {AppControlService} from '../../core/services/app-control.service';
+import {ArtWork} from '../../core/model/art-work';
+import {ArtsService} from '../../core/services/arts.service';
+import {animate, style, transition, trigger} from '@angular/animations';
+import {Subscription, timer} from 'rxjs/index';
+import {DataService} from './Services/data.service';
+import {ProgressSpinnerMode} from '@angular/material/progress-spinner';
 
 // Globals
 @Component({
@@ -35,14 +36,14 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
-    if ((window.innerHeight + window.scrollY) > (document.body.offsetHeight - (document.body.offsetHeight/this._page))) {
+    if ((window.innerHeight + window.scrollY) > (document.body.offsetHeight - (document.body.offsetHeight / this._page))) {
       this.page++;
       this.fnGetData();
     }
   }
 
-  constructor(private control:AppControlService,
-              private artService:ArtsService,
+  constructor(private control: AppControlService,
+              private artService: ArtsService,
               private dataService: DataService
   ) {
   }
@@ -62,7 +63,7 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     this._moreDataSubscription = this.control.moreDataRequested$.subscribe(() => {
       this.page++;
       this.fnGetData();
-    })
+    });
   }
 
   ngOnDestroy(): void {
@@ -138,13 +139,13 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
         if (!r || !r.length) {
           return;
         }
-        let newSources = this.artService.convertToArtItems(r),
+        const newSources = this.artService.convertToArtItems(r),
             newSourcesGrid = this.artService.createSourcesGrid(newSources);
         lastId = r[r.length - 1]._id;
         if (this.sources) {
           this.sources = [...this.sources, ...newSources];
           for (let colIndex = 0; colIndex < this.grid.length; colIndex++) {
-            for (let artsItem of newSourcesGrid[colIndex]) {
+            for (const artsItem of newSourcesGrid[colIndex]) {
               this.grid[colIndex].push(artsItem);
             }
           }
@@ -162,18 +163,18 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
         this.control.provideData(this.sources);
       });
-    }
+    };
   }
 
   onImageLoaded() {
-    console.log("Loaded!");
+    console.log('Loaded!');
   }
 
   showDetails(event) {
     // get the id to get
-    let id = event.target.getAttribute("id");
+    const id = event.target.getAttribute('id');
     // show details
-    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: hidden");
+    document.getElementsByTagName('body')[0].setAttribute('style', 'overflow: hidden');
     this.control.requestDetails({
       sources: this.sources,
       itemId: id
