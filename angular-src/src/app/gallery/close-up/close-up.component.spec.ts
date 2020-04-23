@@ -22,7 +22,7 @@ import {Component, ViewChild} from "@angular/core";
   styles: []
 })
 class MockComponent {
-  @ViewChild(CloseUpComponent) public child: CloseUpComponent;
+  @ViewChild(CloseUpComponent, /* TODO: add static flag */ {}) public child: CloseUpComponent;
 }
 
 describe('CloseUpComponent', () => {

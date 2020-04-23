@@ -6,6 +6,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {Subscription, timer} from 'rxjs/index';
 import {DataService} from './Services/data.service';
 import {ProgressSpinnerMode} from '@angular/material/progress-spinner';
+import { ThemePalette } from '@angular/material/core';
 
 // Globals
 @Component({
@@ -25,7 +26,10 @@ import {ProgressSpinnerMode} from '@angular/material/progress-spinner';
 export class ArtsGridComponent implements OnInit, OnDestroy {
 
   @Input() category: string;
-
+  private _color: ThemePalette = 'primary';
+  private _mode: ProgressSpinnerMode = 'indeterminate';
+  private _value = 50;
+  private _fetchingData = false;
   private _dataSubscription: Subscription;
   private _moreDataSubscription: Subscription;
   private _sources: ArtWork[];
@@ -33,11 +37,14 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   private _fnGetData: Function;
   private _cache: Map<string, ArtWork[]>;
   private _page = 1;
+  private _lastPage = false;
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:wheel', ['$event'])
   onScroll(event) {
-    if ((window.innerHeight + window.scrollY) > (document.body.offsetHeight - (document.body.offsetHeight / this._page))) {
-      this.page++;
+    const maxScrollY = document.body.scrollHeight - window.innerHeight;
+    const lastNPics = window.scrollY > maxScrollY - (maxScrollY / this._page);
+    if (!this._lastPage && lastNPics) {
+      // TODO: Check if new data received and only then increase page.
       this.fnGetData();
     }
   }
@@ -49,19 +56,60 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    let lastId;
+    let lastIndex = 0;
     this.cache = new Map<string, ArtWork[]>();
     this.sources = null;
     this.grid = null;
-    this.fnGetData = this.retrieveGetDataFunction();
-    this.fnGetData();
+    this._fnGetData = () => {
+      if (this._fetchingData) {
+        return;
+      }
+      if (!['drawings', 'calligraphy', 'sculptures'].includes(this.category)) {
+        return;
+      }
+      this._fetchingData = true;
+      this.dataService.getArtifacts(this.category, lastId).subscribe((r: Array<any>) => {
+        this._fetchingData = false;
+        if (!r || !r.length) {
+          this._lastPage = true;
+          return;
+        }
+        const newSources = this.artService.convertToArtItems(r),
+            newSourcesGrid = this.artService.createSourcesGrid(newSources);
+        lastId = r[r.length - 1]._id;
+        if (this.sources) {
+          this.sources = [...this.sources, ...newSources];
+          this.page++;
+          for (let colIndex = 0; colIndex < this.grid.length; colIndex++) {
+            for (const artsItem of newSourcesGrid[colIndex]) {
+              this.grid[colIndex].push(artsItem);
+            }
+          }
+        } else {
+          this.sources = newSources;
+          this.grid = newSourcesGrid;
+        }
+
+        timer(650).subscribe(() => {
+          for (let sourceIndex = lastIndex; sourceIndex < this.sources.length; sourceIndex++) {
+            this.sources[sourceIndex].showItem = true;
+          }
+          lastIndex = this.sources.length;
+        });
+
+        this.control.provideData(this.sources);
+      });
+    };
     this.page = 1;
+    this.fnGetData();
 
     this._dataSubscription = this.control.dataRequested$.subscribe(() => {
       this.control.provideData(this.sources);
     });
 
     this._moreDataSubscription = this.control.moreDataRequested$.subscribe(() => {
-      this.page++;
+      // this.page++;
       this.fnGetData();
     });
   }
@@ -73,6 +121,18 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
   }
 
   // ---------------------- GETTER/SETTER -----------------------
+
+  get color() {
+    return this._color;
+  }
+
+  get mode() {
+    return this._mode;
+  }
+
+  get value() {
+    return this._value;
+  }
 
   get dataSubscription() {
     return this._dataSubscription;
@@ -102,6 +162,10 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     return this._page;
   }
 
+  get fetchingData() {
+    return this._fetchingData;
+  }
+
   set sources(val) {
     this._sources = val;
   }
@@ -110,60 +174,12 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
     this._sourcesGrid = val;
   }
 
-  set fnGetData(val) {
-    this._fnGetData = val;
-  }
-
   set cache(val) {
     this._cache = val;
   }
 
   set page(val) {
     this._page = val;
-  }
-
-  retrieveGetDataFunction() {
-    let lastId,
-        lastIndex = 0,
-        fetchingData = false;
-    return function() {
-      if (fetchingData) {
-        return;
-      }
-      if (!['drawings', 'calligraphy', 'sculptures'].includes(this.category)) {
-        return;
-      }
-      fetchingData = true;
-      this.dataService.getArtifacts(this.category, lastId).subscribe(r => {
-        fetchingData = false;
-        if (!r || !r.length) {
-          return;
-        }
-        const newSources = this.artService.convertToArtItems(r),
-            newSourcesGrid = this.artService.createSourcesGrid(newSources);
-        lastId = r[r.length - 1]._id;
-        if (this.sources) {
-          this.sources = [...this.sources, ...newSources];
-          for (let colIndex = 0; colIndex < this.grid.length; colIndex++) {
-            for (const artsItem of newSourcesGrid[colIndex]) {
-              this.grid[colIndex].push(artsItem);
-            }
-          }
-        } else {
-          this.sources = newSources;
-          this.grid = newSourcesGrid;
-        }
-
-        timer(650).subscribe(() => {
-          for (let sourceIndex = lastIndex; sourceIndex < this.sources.length; sourceIndex++) {
-            this.sources[sourceIndex].showItem = true;
-          }
-          lastIndex = this.sources.length;
-        });
-
-        this.control.provideData(this.sources);
-      });
-    };
   }
 
   onImageLoaded() {

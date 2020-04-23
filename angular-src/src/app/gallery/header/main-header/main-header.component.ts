@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {NavComponent} from "../nav/nav.component";
-import {HeaderService} from "../services/header.service";
-import {HeaderModel} from "../header-model";
+import {NavComponent} from '../nav/nav.component';
+import {HeaderService} from '../services/header.service';
+import {HeaderModel} from '../header-model';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
-import {Subscription} from "rxjs/index";
-import {animate, style, transition, trigger} from "@angular/animations";
+import {Subscription} from 'rxjs/index';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'mf-main-header',
@@ -21,15 +21,15 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class MainHeaderComponent implements OnInit, OnDestroy {
 
-  @ViewChild(NavComponent) navComponent;
+  @ViewChild(NavComponent, { static: true }) navComponent;
 
   private _faUser = faUser;
-  private _routerSubscription:Subscription;
-  private _usersFormContainerDisplayed:boolean;
-  private _usersFormContainerHidden:boolean;
-  private _usersFormDisplayed:boolean;
+  private _routerSubscription: Subscription;
+  private _usersFormContainerDisplayed: boolean;
+  private _usersFormContainerHidden: boolean;
+  private _usersFormDisplayed: boolean;
 
-  constructor(private headerService:HeaderService) {
+  constructor(private headerService: HeaderService) {
     this._routerSubscription = headerService.routeChanged$.subscribe(param => this.navComponent.currentRoute = param);
   }
 
@@ -55,9 +55,8 @@ export class MainHeaderComponent implements OnInit, OnDestroy {
 
   toggleUsersForm() {
     if (!this._usersFormDisplayed) {
-      setTimeout(() => this._usersFormDisplayed = !this._usersFormDisplayed, 600)
-    }
-    else {
+      setTimeout(() => this._usersFormDisplayed = !this._usersFormDisplayed, 600);
+    } else {
       this._usersFormDisplayed = !this._usersFormDisplayed;
     }
     this._usersFormContainerDisplayed = !this._usersFormContainerDisplayed;

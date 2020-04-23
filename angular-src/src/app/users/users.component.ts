@@ -7,7 +7,7 @@ import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
 })
 export class UsersComponent implements OnInit {
 
-  private selectedElement:string;
+  private selectedElement: string;
   constructor() { }
 
   ngOnInit() {
@@ -15,7 +15,7 @@ export class UsersComponent implements OnInit {
   }
 
   isSelected(val) {
-    return this.selectedElement == val;
+    return this.selectedElement === val;
   }
 
   select(val) {

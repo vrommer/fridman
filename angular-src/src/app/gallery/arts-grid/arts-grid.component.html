@@ -1,10 +1,11 @@
-<div class="container mf-arts-grid">
-  <!-- <mat-progress-spinner
-    class="example-margin"
+<div id="progress-spinner" *ngIf="fetchingData">
+  <mat-progress-spinner
     [color]="color"
     [mode]="mode"
     [value]="value">
-  </mat-progress-spinner> -->
+  </mat-progress-spinner>
+</div>
+<div class="container mf-arts-grid">  
   <div id="arts-grid" class="row" (click)="showDetails($event)">
     <div *ngFor="let col of grid" class="col-3">
       <div *ngFor="let source of col" class="mb-4 mfArtWorkThumbnailContainer">

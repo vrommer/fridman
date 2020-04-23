@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'mf-log-in-form',
@@ -9,9 +9,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 export class LogInFormComponent implements OnInit {
 
   logInForm: FormGroup;
-  wasValidated:boolean;
-  emailIsValid:boolean;
-  passwordValid:boolean;
+  wasValidated: boolean;
+  emailIsValid: boolean;
+  passwordValid: boolean;
 
   constructor() { }
 
@@ -26,7 +26,7 @@ export class LogInFormComponent implements OnInit {
     this.emailIsValid = true;
     this.passwordValid = true;
     this.logInForm = new FormGroup({
-      email: new FormControl('', [ Validators.required, Validators.pattern("[^ @]*@[^ @]*") ]),
+      email: new FormControl('', [ Validators.required, Validators.pattern('[^ @]*@[^ @]*') ]),
       password: new FormControl('', Validators.required)
     });
   }
