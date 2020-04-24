@@ -2,11 +2,10 @@ import {
   AfterContentInit, Component, ContentChildren, Input,
   QueryList, Output, EventEmitter, AfterViewInit, ViewChild
 } from '@angular/core';
-import {CarouselItemComponent} from "./carousel-item/carousel-item.component";
-import {CarouselMode} from "./carousel-utils/carousel-mode";
-import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
-import {faAngleRight} from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import {Subject} from "rxjs/index";
+import {CarouselItemComponent} from './carousel-item/carousel-item.component';
+import {CarouselMode} from './carousel-utils/carousel-mode';
+import {faAngleLeft} from '@fortawesome/free-solid-svg-icons';
+import {faAngleRight} from '@fortawesome/free-solid-svg-icons/faAngleRight';
 
 @Component({
   selector: 'mf-carousel',
@@ -20,7 +19,7 @@ export class CarouselComponent implements AfterViewInit, AfterContentInit {
   @Input() viewMode: CarouselMode = CarouselMode.manual;
   @Input() pointer: number;
   @Input() delay: number;
-  @ContentChildren(CarouselItemComponent) items: QueryList<CarouselItemComponent>;
+  @ContentChildren(CarouselItemComponent, {descendants: true}) items: QueryList<CarouselItemComponent>;
 
   private _lastFewPages = 5;
 
@@ -43,17 +42,17 @@ export class CarouselComponent implements AfterViewInit, AfterContentInit {
     this.itemsArray = this.items.toArray();
     this.items.changes.subscribe(() => {
       this.itemsArray = this.items.toArray();
-    })
+    });
   }
 
   private showNextItemAuto = () => {
     this.nextItem();
     this.nextItemAuto();
-  };
+  }
 
   private nextItemAuto = () => {
     setTimeout(this.showNextItemAuto, this.delay);
-  };
+  }
 
   public nextItem = () => {
     if (this.itemsArray && this.itemsArray.length && this.pointer < (this.items.length - 1)) {
@@ -66,18 +65,18 @@ export class CarouselComponent implements AfterViewInit, AfterContentInit {
         this.fewItemsLeft.emit(null);
       }
     }
-  };
+  }
 
   public previousItem = () => {
     if (this.itemsArray && this.itemsArray.length && this.pointer > 0) {
       this.itemsArray[this.pointer].hide();
       this.pointer--;
-      if (this.pointer < 0){
+      if (this.pointer < 0) {
         this.pointer = this.items.length + this.pointer;
       }
       this.itemsArray[this.pointer].show();
     }
-  };
+  }
 
   public isNextBtnHoverable() {
     return this.pointer < (this.itemsArray.length - 1);

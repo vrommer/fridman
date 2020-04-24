@@ -11,18 +11,17 @@ import {Subscription} from "rxjs/index";
   styleUrls: ['./close-up.component.scss']
 })
 export class CloseUpComponent implements OnInit, OnDestroy {
-  @Input() requestedItemId:any;
-
+  @Input() requestedItemId: any;
+  private _carouselMode: CarouselMode = CarouselMode.manual;
+  private _sources: any;
+  private _itemIndex: number;
+  private _dataProviderSubscription: Subscription;
   @HostListener('document:keydown.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
     event.preventDefault();
     this.exitCloseUp();
   }
 
-  private _carouselMode: CarouselMode = CarouselMode.manual;
-  private _sources: any;
-  private _itemIndex: number;
-  private _dataProviderSubscription: Subscription;
 
   constructor(private control:AppControlService
   ) { }
