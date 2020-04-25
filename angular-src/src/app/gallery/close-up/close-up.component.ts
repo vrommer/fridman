@@ -1,9 +1,9 @@
 import {
   Component, HostListener, Input, OnInit, OnDestroy
 } from '@angular/core';
-import {CarouselMode} from "../../shared/carousel/carousel-utils/carousel-mode";
-import {AppControlService} from "../../core/services/app-control.service";
-import {Subscription} from "rxjs/index";
+import {CarouselMode} from '../../shared/carousel/carousel-utils/carousel-mode';
+import {AppControlService} from '../../core/services/app-control.service';
+import {Subscription} from 'rxjs/index';
 
 @Component({
   selector: 'mf-close-up',
@@ -23,7 +23,7 @@ export class CloseUpComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private control:AppControlService
+  constructor(private control: AppControlService
   ) { }
 
   ngOnInit() {
@@ -76,7 +76,7 @@ export class CloseUpComponent implements OnInit, OnDestroy {
   }
 
   exitCloseUp() {
-    document.getElementsByTagName("body")[0].setAttribute("style", "overflow: auto");
+    document.getElementsByTagName('body')[0].setAttribute('style', 'overflow: auto');
     this.control.requestDetails(null);
   }
 

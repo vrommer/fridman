@@ -110,7 +110,9 @@ export class ArtsGridComponent implements OnInit, OnDestroy {
 
     this._moreDataSubscription = this.control.moreDataRequested$.subscribe(() => {
       // this.page++;
-      this.fnGetData();
+      if (!this._lastPage) {
+        this.fnGetData();
+      }
     });
   }
 
