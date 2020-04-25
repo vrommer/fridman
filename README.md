@@ -13,4 +13,4 @@ This project leverages angular for its UI and Express for the back-end.
 ### mitigations
 * The *about* page is not ready yet.
 * The login is UI only. The authentication is not yet implemented.
-* The project is not yet set up to run using https
+* The project is not yet set up to run using https.
