@@ -1,6 +1,6 @@
 # Fridman
 A website for the art works of Michael Fridman. 
-Demo: http://34.71.187.78
+[Watch demo!](http://34.71.187.78)
 ## About
 This project leverages angular for its UI and Express for the back-end.
 ### The project comprises:
