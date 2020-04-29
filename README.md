@@ -10,7 +10,7 @@ This project leverages angular for its UI and Express for the back-end.
   3. Sculptures
 * Gallery with content as selected in the header.
 * When a picture is clicked it is closed up in a carousel.
-### mitigations
+### mitigations:
 * The *about* page is not ready yet.
 * The login is UI only. The authentication is not yet implemented.
 * The project is not yet set up to run using https.
